@@ -13,12 +13,12 @@
 
 
 %:- owl_parser:owl_parse('package://iai_kitchen/owl/iai-kitchen-objects.owl').
-:- owl_parser:owl_parse('package://rs_prolog_interface/owl/rs_iai_objects.owl').
+:- owl_parser:owl_parse('package://robosherlock_knowrob/owl/rs_iai_objects.owl').
 
 :- rdf_db:rdf_register_prefix(kitchen, 'http://knowrob.org/kb/iai-kitchen.owl#', [keep(true)]).
 %:- rdf_db:rdf_register_prefix(rs_objects, 'http://knowrob.org/kb/rs_objects.owl#', [keep(true)]).
 
-:- owl_parser:owl_parse('package://knowrob_robosherlock/owl/rs_components.owl').
+:- owl_parser:owl_parse('package://robosherlock_knowrob/owl/rs_components.owl').
 :- rdf_db:rdf_register_prefix(rs_components, 'http://knowrob.org/kb/rs_components.owl#', [keep(true)]).
 
 

@@ -419,7 +419,7 @@ def getAnnotatorRequirements(filepath):
     """Fetch the requirements of a Annotator from the annotator definition. Input: full filepath for a annotator
     description XML. It looks for "Requires CAPABILITYNAME" or "RequiresCAPABILITYNAME' in the 'description'
     field of the annotator XML. The usable Capabilitynames are defined at the heading of this file
-    and should comply with the Capability Names in the rs_components.owl (knowrob_robosherlock package)
+    and should comply with the Capability Names in the rs_components.owl (robosherlock_knowrob package)
     below the PerceptionCapability class.
     Returns: A list of required Capabilities"""
     outputs = []

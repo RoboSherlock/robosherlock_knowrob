@@ -4,7 +4,7 @@ project(robosherlock_knowrob)
 
 find_package(catkin REQUIRED rosprolog
              knowrob_common knowrob_actions knowrob_srdl robosherlock 
-             designator_integration_msgs robosherlock_msgs json_prolog)
+             robosherlock_msgs json_prolog)
 
 find_package(PkgConfig)
 pkg_check_modules(SWIPL REQUIRED swipl)
@@ -30,7 +30,7 @@ include_directories(
         ${catkin_INCLUDE_DIRS}
         )
 
-add_library(rs_prologQueries
+rs_add_library(rs_prologQueries
     src/PrologQueries.cpp)
 target_link_libraries(rs_prologQueries 
 	${robosherlock_LIBRARIES} 

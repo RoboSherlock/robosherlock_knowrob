@@ -1,6 +1,4 @@
 #include <rapidjson/document.h>
-#include <designator_integration_msgs/Designator.h>
-#include <designator_integration_msgs/DesignatorCommunication.h>
 
 #include <rs/flowcontrol/RSControledAnalysisEngine.h>
 #include <rs/flowcontrol/RSProcessManager.h>

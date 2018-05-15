@@ -49,7 +49,7 @@
 :- use_module(library('jpl')).
 
 % Load RoboSherlock components
-:- owl_parse('package://knowrob_robosherlock/owl/rs_components.owl').
+:- owl_parse('package://robosherlock_knowrob/owl/rs_components.owl').
 
 % Register Namespaces
 :- rdf_db:rdf_register_ns(rs_components, 'http://knowrob.org/kb/rs_components.owl#',     [keep(true)]).

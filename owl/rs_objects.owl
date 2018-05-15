@@ -12,7 +12,7 @@
      xmlns:computable="http://knowrob.org/kb/computable.owl#">
     <owl:Ontology rdf:about="http://knowrob.org/kb/rs_objects.owl">
         <owl:imports rdf:resource="package://knowrob_common/owl/knowrob.owl"/>
-        <owl:imports rdf:resource="package://knowrob_robosherlock/owl/rs_components.owl"/>
+        <owl:imports rdf:resource="package://robosherlock_knowrob/owl/rs_components.owl"/>
         <rdfs:comment rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Objects for RoboSherlock
         </rdfs:comment>
     </owl:Ontology>
