@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(knowrob_robosherlock)
+project(robosherlock_knowrob)
 
 
 find_package(catkin REQUIRED rosprolog

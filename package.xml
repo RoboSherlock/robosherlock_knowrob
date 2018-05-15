@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>knowrob_robosherlock</name>
+  <name>robosherlock_knowrob</name>
   <version>0.1.0</version>
   <description>package holding prolog rules relating to robosherlocke
  		- planning a pipeline based on keywords
