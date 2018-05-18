@@ -446,6 +446,9 @@ def getAnnotatorNames():
 
     for p in paths:
         print p
+	if os.path.isdir(p) == False:
+	    continue;
+	
         for subdir in os.walk(p).next()[1]:
             atypes.append(subdir)
             subdirpath = os.path.join(p,subdir)
