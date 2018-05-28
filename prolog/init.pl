@@ -12,8 +12,8 @@
 :- use_foreign_library('rs_prologQueries.so').
 
 
-%:- owl_parser:owl_parse('package://iai_kitchen/owl/iai-kitchen-objects.owl').
-:- owl_parser:owl_parse('package://robosherlock_knowrob/owl/rs_iai_objects.owl').
+:- owl_parser:owl_parse('package://iai_kitchen/owl/iai-kitchen-objects.owl').
+%:- owl_parser:owl_parse('package://robosherlock_knowrob/owl/rs_iai_objects.owl').
 
 :- rdf_db:rdf_register_prefix(kitchen, 'http://knowrob.org/kb/iai-kitchen.owl#', [keep(true)]).
 %:- rdf_db:rdf_register_prefix(rs_objects, 'http://knowrob.org/kb/rs_objects.owl#', [keep(true)]).

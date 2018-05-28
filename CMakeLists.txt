@@ -3,7 +3,7 @@ project(robosherlock_knowrob)
 
 
 find_package(catkin REQUIRED rosprolog
-             knowrob_common knowrob_actions knowrob_srdl robosherlock 
+             knowrob_common knowrob_actions knowrob_srdl robosherlock iai_maps 
              robosherlock_msgs json_prolog)
 
 find_package(PkgConfig)

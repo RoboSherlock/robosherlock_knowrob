@@ -18,6 +18,7 @@
   <depend>knowrob_vis</depend>
   <depend>knowrob_actions</depend>
   <depend>knowrob_srdl</depend>
+  <depend>iai_maps</depend>
   <depend>robosherlock</depend>
 
 
