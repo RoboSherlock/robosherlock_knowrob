@@ -138,11 +138,10 @@ designator_type([ A,B | T ] ):-
 
 
 detect(List):-
-    rs_interface(A),
+    %rs_interface(A),
     parse_description(List,D),
     thread_create((cpp_print_desig(D),
-    cpp_process_once(D),
-    cpp_delete_desig(D)),Th,[]).
+    cpp_query_rs(D)),Th,[]).
      %thread_join(Th,Status).
 
 detect_json(Json):-
