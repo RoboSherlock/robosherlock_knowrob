@@ -46,20 +46,13 @@ PREDICATE(cpp_query_rs, 1)
   void *query = A1;
   std::string *queryString = (std::string *)(query);
   ros::NodeHandle n;
-  outInfo("Calling service RoboSherlock_constantin/query");
-  ros::ServiceClient client = n.serviceClient<robosherlock_msgs::RSQueryService>("RoboSherlock_constantin/query");
+  ros::ServiceClient client = n.serviceClient<robosherlock_msgs::RSQueryService>("RoboSherlock/query");
   robosherlock_msgs::RSQueryService srv;
-  outInfo("String");
   outInfo(queryString->c_str());
   srv.request.query = queryString->c_str();
   if (client.call(srv))
   {
     outInfo("Call was successful");
-    outInfo("result: ");
-    if(srv.response.answer.size()>0)
-    	outInfo(srv.response.answer[0]);
-    else
-        outInfo("No results");
     return TRUE;
   }
   else
