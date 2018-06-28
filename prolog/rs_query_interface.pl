@@ -60,6 +60,7 @@ designator(object).
 %keywords available
 rs_query_keyword(shape).
 rs_query_keyword(detection).
+rs_query_keyword(obj-part).
 rs_query_keyword(class).
 rs_query_keyword(size).
 rs_query_keyword(type).
@@ -69,7 +70,7 @@ rs_query_keyword(volume).
 rs_query_keyword(contains).
 rs_query_keyword(timestamp).
 rs_query_keyword(handle).
-
+rs_query_keywork(location).
 % for simplifying query writing spatial relation can also be keyword
 
 spatial_relation(on).

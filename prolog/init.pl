@@ -3,7 +3,7 @@
 :- register_ros_package(knowrob_common).
 :- register_ros_package(knowrob_objects).
 :- register_ros_package(knowrob_vis).
-
+:- register_ros_package(knowrob_srdl).
 :- register_ros_package(robosherlock_knowrob).
 
 :- use_module(library(rs_plan_pipeline)).
