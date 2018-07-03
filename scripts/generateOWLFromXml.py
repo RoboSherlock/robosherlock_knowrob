@@ -541,18 +541,18 @@ if __name__ == "__main__":
     # Add the actual Annotators
     for a in annotators:
         print ("An Annotator: " + a.ontology_name() + " AND " + a.ontology_subclass_of() +
-                " |I|=" + str(len(a.inputs())) +
-                " |O|=" + str(len(a.outputs()))
+                " |I|=" + str(len(a.ontology_inputs())) +
+                " |O|=" + str(len(a.ontology_outputs()))
                )
         # Skip ROSBagBridge atm to avoid failures in planning
         if a.ontology_name() == "ROSBagBridge":
             continue
         # Collect input/output relations
         relations = []
-        for ins in a.inputs() :
+        for ins in a.ontology_inputs() :
             print " Input: " + ins
             relations.append( ( INPUT_PROPERTY_NAME , ins ) )
-        for outs in a.outputs() :
+        for outs in a.ontology_outputs() :
             print " Output: " + outs
             relations.append( ( OUTPUT_PROPERTY_NAME , outs ) )
         for cap in a.ontology_required_capabilities() :
@@ -560,10 +560,10 @@ if __name__ == "__main__":
 
 
         class_relations = []
-        for ins in a.inputs() :
+        for ins in a.ontology_inputs() :
             # print " Input: " + ins
             class_relations.append( ( "http://knowrob.org/kb/rs_components.owl#"+ACTOR_INPUT_PROPERTY_NAME , ("http://knowrob.org/kb/rs_components.owl#"+ins) ) )
-        for outs in a.outputs() :
+        for outs in a.ontology_outputs() :
             # print " Output: " + outs
             class_relations.append( ( "http://knowrob.org/kb/rs_components.owl#"+ACTOR_OUTPUT_PROPERTY_NAME , ("http://knowrob.org/kb/rs_components.owl#"+outs) ) )
         for cap in a.ontology_required_capabilities() :

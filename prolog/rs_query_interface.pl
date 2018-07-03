@@ -70,7 +70,7 @@ rs_query_keyword(volume).
 rs_query_keyword(contains).
 rs_query_keyword(timestamp).
 rs_query_keyword(handle).
-rs_query_keywork(location).
+rs_query_keyword(location).
 % for simplifying query writing spatial relation can also be keyword
 
 spatial_relation(on).
