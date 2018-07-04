@@ -20,6 +20,6 @@
   <depend>knowrob_srdl</depend>
   <depend>iai_maps</depend>
   <depend>robosherlock</depend>
-
-
+  <depend>robosherlock_msgs</depend>
+  <depend>json_prolog</depend>
 </package>

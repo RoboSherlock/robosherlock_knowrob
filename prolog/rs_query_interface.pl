@@ -12,6 +12,8 @@
   detect_new/2
 ]).
 
+:- use_foreign_library('librs_prologQueries.so').
+
 %%%%%%%%%%%%%%%% BEGIN: C++ Interface %%%%%%%%%%%%%%%%%%%%
 %%Queries written using this interface need a sanity check
 %%e,g,. spatial relations do not make sense inside a color determiner 
@@ -50,7 +52,7 @@ rs_clear_ae:-
 %defs for syntax checks
 designator_type([an,object],'object').
 designator_type([an,obj],'object').
-sesignator_type([the,object],'object').
+designator_type([the,object],'object').
 designator_type([a,location],'location').
 
 %defs for designator types

@@ -9,8 +9,6 @@
 :- use_module(library(rs_plan_pipeline)).
 :- use_module(library(rs_query_interface)).
 :- use_module(library(rs_similar_objects)).
-:- use_foreign_library('librs_prologQueries.so').
-
 
 :- owl_parser:owl_parse('package://iai_kitchen/owl/iai-kitchen-objects.owl').
 %:- owl_parser:owl_parse('package://robosherlock_knowrob/owl/rs_iai_objects.owl').
