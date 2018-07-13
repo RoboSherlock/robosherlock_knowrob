@@ -111,7 +111,7 @@ add_kvp(Key,Value,D):-
     cpp_add_kvp(Key,Value,D).
 %return true once List is empty
 
-add_kvp([],D).
+add_kvp([],_).
 
 %main rule for adding kvps
 add_kvp([Head|Tail],D):-
@@ -136,19 +136,19 @@ parse_description([ A,B | Tail],D):-
     cpp_add_designator(T,D), 
     add_kvp(Tail,D).
 
-designator_type([ A,B | T ] ):-
-    designator_type([A,B],N).
+designator_type([ A,B | _ ] ):-
+    designator_type([A,B],_).
 
 
 detect(List):-
     %rs_interface(A),
     parse_description(List,D),
     thread_create((cpp_print_desig(D),
-    cpp_query_rs(D)),Th,[]).
+    cpp_query_rs(D)),_,[]).
      %thread_join(Th,Status).
 
 detect_json(Json):-
-    rs_interface(A),
+    rs_interface,
     cpp_make_designator(Json,Desig),
     cpp_process_once(Desig).
 
@@ -176,7 +176,7 @@ get_list_of_predicates([],[]).
 get_list_of_predicates([Pred|T],[Pred|Result]):-
 	is_predicate(Pred),
 	get_list_of_predicates(T,Result).
-get_list_of_predicates([ThrowAway|Tail],Result):-
+get_list_of_predicates([_|Tail],Result):-
 get_list_of_predicates(Tail,Result).
 
 

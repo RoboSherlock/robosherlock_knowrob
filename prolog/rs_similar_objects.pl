@@ -6,7 +6,7 @@
 rs_object_candidates([]).
 
 rs_object_candidates([Head|Tail]):-
-  is_valid_candidate(Head,Obj),
+  is_valid_candidate(Head,_),
   rs_object_candidates(Tail).
 
 is_valid_candidate(List,Obj):-
