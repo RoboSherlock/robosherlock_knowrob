@@ -161,6 +161,7 @@ class OWLWriteManager:
             "     <owl:imports rdf:resource=\"package://knowrob_srdl/owl/srdl2-action.owl\"/>\n"
             "     <owl:imports rdf:resource=\"package://knowrob_srdl/owl/srdl2-cap.owl\"/>\n"
             "     <owl:imports rdf:resource=\"package://knowrob_srdl/owl/srdl2-comp.owl\"/>\n"
+            "     <owl:imports rdf:resource=\"package://iai_kitchen/owl/iai-kitchen-objects.owl\"/>\n"
             "    </owl:Ontology>\n\n\n"
             "<!-- http://knowrob.org/kb/" + self.file_name + "#RoboSherlockComponent-->\n"
             "<owl:Class rdf:about=\"http://knowrob.org/kb/" + self.file_name + "#RoboSherlockComponent\">\n"

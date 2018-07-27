@@ -33,6 +33,7 @@
      <owl:imports rdf:resource="package://knowrob_srdl/owl/srdl2-action.owl"/>
      <owl:imports rdf:resource="package://knowrob_srdl/owl/srdl2-cap.owl"/>
      <owl:imports rdf:resource="package://knowrob_srdl/owl/srdl2-comp.owl"/>
+     <owl:imports rdf:resource="package://iai_kitchen/owl/iai-kitchen-objects.owl"/>
     </owl:Ontology>
 
 
@@ -352,8 +353,8 @@
     <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
 </owl:Class>
 
-<!-- http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud -->
-<owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud">
+<!-- http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud -->
+<owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud">
     <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
 </owl:Class>
 
@@ -626,7 +627,7 @@
     <rdfs:subClassOf>
         <owl:Restriction>
             <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
-            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud"/>
         </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -660,11 +661,6 @@
 
 <!-- http://knowrob.org/kb/rs_components.owl#TFBroadcaster -->
 <owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#TFBroadcaster">
-    <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#IoComponent"/>
-</owl:Class>
-
-<!-- http://knowrob.org/kb/rs_components.owl#ResultAdvertiser -->
-<owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#ResultAdvertiser">
     <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#IoComponent"/>
 </owl:Class>
 
@@ -897,7 +893,7 @@
     <rdfs:subClassOf>
         <owl:Restriction>
             <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
-            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud"/>
         </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -969,7 +965,7 @@
     <rdfs:subClassOf>
         <owl:Restriction>
             <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualOutput"/>
-            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud"/>
         </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -983,6 +979,18 @@
 <!-- http://knowrob.org/kb/rs_components.owl#PointCloudFilter -->
 <owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#PointCloudFilter">
     <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#FilterComponent"/>
+    <rdfs:subClassOf>
+        <owl:Restriction>
+            <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
+        </owl:Restriction>
+    </rdfs:subClassOf>
+    <rdfs:subClassOf>
+        <owl:Restriction>
+            <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualOutput"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud"/>
+        </owl:Restriction>
+    </rdfs:subClassOf>
 </owl:Class>
 
 <!-- http://knowrob.org/kb/rs_components.owl#ClusterFilter -->
@@ -1083,7 +1091,7 @@
     <rdfs:subClassOf>
         <owl:Restriction>
             <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
-            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud"/>
         </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -1117,7 +1125,7 @@
     <rdfs:subClassOf>
         <owl:Restriction>
             <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
-            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud"/>
         </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -1156,7 +1164,7 @@
     <rdfs:subClassOf>
         <owl:Restriction>
             <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
-            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
+            <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclFilteredpointcloud"/>
         </owl:Restriction>
     </rdfs:subClassOf>
     <rdfs:subClassOf>
@@ -1180,16 +1188,6 @@
 <!-- http://knowrob.org/kb/rs_components.owl#BilateralSymmetrySegmentation -->
 <owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#BilateralSymmetrySegmentation">
     <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#SegmentationComponent"/>
-</owl:Class>
-
-<!-- http://knowrob.org/kb/rs_components.owl#MoveTurnTable -->
-<owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#MoveTurnTable">
-    <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#RoboSherlockComponent"/>
-</owl:Class>
-
-<!-- http://knowrob.org/kb/rs_components.owl#SaveClusterCloudsAndImages -->
-<owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#SaveClusterCloudsAndImages">
-    <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#RoboSherlockComponent"/>
 </owl:Class>
 
 <!-- http://knowrob.org/kb/rs_components.owl#CaffeClassificationAnnotator -->
@@ -1350,6 +1348,16 @@
 
 <!-- http://knowrob.org/kb/rs_components.owl#ProductCounter -->
 <owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#ProductCounter">
+    <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#RoboSherlockComponent"/>
+</owl:Class>
+
+<!-- http://knowrob.org/kb/rs_components.owl#MoveTurnTable -->
+<owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#MoveTurnTable">
+    <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#RoboSherlockComponent"/>
+</owl:Class>
+
+<!-- http://knowrob.org/kb/rs_components.owl#SaveClusterCloudsAndImages -->
+<owl:Class rdf:about="http://knowrob.org/kb/rs_components.owl#SaveClusterCloudsAndImages">
     <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#RoboSherlockComponent"/>
 </owl:Class>
 
@@ -1527,919 +1535,6 @@
     <rdfs:subClassOf rdf:resource="http://knowrob.org/kb/rs_components.owl#ModelDetection"/>
 </owl:Class>
 
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationSegment -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationSegment">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSegment"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationTransparentsegment -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationTransparentsegment">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationTransparentsegment"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationBoard -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationBoard">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationBoard"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationPlane -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationPlane">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPlane"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationSemanticcolor -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationSemanticcolor">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationShape -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationShape">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationShape"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationCylindricalshape -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationCylindricalshape">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationCylindricalshape"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationTflocation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationTflocation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationTflocation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationColorhistogram -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationColorhistogram">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationColorhistogram"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationNamedlink -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationNamedlink">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationNamedlink"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGoggles -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGoggles">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationClassconfidence -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationClassconfidence">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationClassconfidence"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationClassification -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationClassification">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationClassification"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationTracking -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationTracking">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationTracking"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationPoseannotation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationPoseannotation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationSemanticsize -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationSemanticsize">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticsize"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGeometry -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGeometry">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationMlnatoms -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationMlnatoms">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationMlnatoms"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationDetection -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationDetection">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationFeatures -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationFeatures">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationFeatures"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationResponse -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationResponse">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationResponse"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGraspannotation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGraspannotation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGraspannotation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationHandleannotation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationHandleannotation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationHandleannotation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationClusterpart -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationClusterpart">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationArmarker -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationArmarker">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationArmarker"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGroundtruth -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationGroundtruth">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGroundtruth"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationRotationalsymmetry -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationRotationalsymmetry">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationRotationalsymmetry"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationBilateralsymmetry -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsAnnotationBilateralsymmetry">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationBilateralsymmetry"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsRosHeader -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsRosHeader">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsRosHeader"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsRosRoi -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsRosRoi">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsRosRoi"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsRosCamerainfo -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsRosCamerainfo">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsRosCamerainfo"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsSceneCluster -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsSceneCluster">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneCluster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsSceneMergedcluster -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsSceneMergedcluster">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsSceneObject -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsSceneObject">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneObject"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanHuman -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanHuman">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanHuman"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanJoint -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanJoint">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanJoint"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanJoint2d -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanJoint2d">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanJoint2d"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanJoint3d -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanJoint3d">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanJoint3d"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanPointingaction -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanPointingaction">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanPointingaction"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanFace -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanFace">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanFace"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanAction -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanAction">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanAction"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsHumanObjacton -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsHumanObjacton">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsHumanObjacton"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclPointcloud -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclPointcloud">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclNormalscloud -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclNormalscloud">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclRegionpointcloud -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclRegionpointcloud">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclPointindices -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclPointindices">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointindices"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclPclfeature -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclPclfeature">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPclfeature"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclClusterpoints -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclClusterpoints">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclClusterpoints"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclReferenceclusterpoints -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclReferenceclusterpoints">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclReferenceclusterpoints"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclStandaloneclusterpoints -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclStandaloneclusterpoints">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclStandaloneclusterpoints"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsPclBoundingbox3d -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsPclBoundingbox3d">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclBoundingbox3d"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvSize -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvSize">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvSize"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvSize2f -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvSize2f">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvSize2f"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvPoint"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint2f -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint2f">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvPoint2f"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint2d -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint2d">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvPoint2d"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint3f -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint3f">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvPoint3f"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint3d -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvPoint3d">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvPoint3d"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvRect -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvRect">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvRect"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvRotatedrect -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvRotatedrect">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvRotatedrect"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvVec3f -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvVec3f">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvVec3f"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvVec4f -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvVec4f">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvVec4f"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvKeypoint -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvKeypoint">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvKeypoint"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvMat -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvMat">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvMat"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvImageroi -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvImageroi">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvImageroi"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvMoments -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvMoments">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvMoments"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCvObjectmap -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCvObjectmap">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvObjectmap"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsTfPose -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsTfPose">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsTfPose"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsTfStampedpose -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsTfStampedpose">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsTfStampedpose"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsTfStampedtransform -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsTfStampedtransform">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsTfStampedtransform"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCoreIdentifiable -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCoreIdentifiable">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCoreIdentifiable"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCoreQuery -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCoreQuery">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCoreQuery"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCoreCwassumption -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCoreCwassumption">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCoreCwassumption"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCoreScene -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCoreScene">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCoreScene"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCoreAnnotation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCoreAnnotation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCoreAnnotation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRsCoreSemanticmapobject -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRsCoreSemanticmapobject">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCoreSemanticmapobject"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceLinemodAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceLinemodAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#LinemodAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClassifierDetection -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClassifierDetection">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClassifierDetection"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceMLNInferencer -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceMLNInferencer">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#MLNInferencer"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationShape"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationMlnatoms"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceKNNClassifier -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceKNNClassifier">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#KNNClassifier"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePlaneAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePlaneAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PlaneAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPlane"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceBoardDetector -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceBoardDetector">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#BoardDetector"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceCollectionReader -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceCollectionReader">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#CollectionReader"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvMat"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceStorageWriter -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceStorageWriter">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#StorageWriter"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceTFBroadcaster -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceTFBroadcaster">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#TFBroadcaster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceResultAdvertiser -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceResultAdvertiser">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ResultAdvertiser"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceCluster3DGeometryAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceCluster3DGeometryAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#Cluster3DGeometryAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceCaffeAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceCaffeAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#CaffeAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationFeatures"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePrimitiveShapeAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePrimitiveShapeAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PrimitiveShapeAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPlane"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationShape"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePCLDescriptorExtractor -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePCLDescriptorExtractor">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PCLDescriptorExtractor"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceSupervoxelAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceSupervoxelAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#SupervoxelAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePCLVFHFeatureExtractor -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePCLVFHFeatureExtractor">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PCLVFHFeatureExtractor"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationFeatures"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceSacModelAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceSacModelAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#SacModelAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationShape"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationCylindricalshape"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceFeatureAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceFeatureAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#FeatureAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationFeatures"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClusterColorHistogramCalculator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClusterColorHistogramCalculator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClusterColorHistogramCalculator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationColorhistogram"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceGogglesAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceGogglesAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#GogglesAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClusterTFLocationAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClusterTFLocationAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClusterTFLocationAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationTflocation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceNormalEstimator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceNormalEstimator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#NormalEstimator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePointCloudDownsampler -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePointCloudDownsampler">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PointCloudDownsampler"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceTrigger -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceTrigger">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#Trigger"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClusterMerger -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClusterMerger">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClusterMerger"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneCluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceImagePreprocessor -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceImagePreprocessor">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ImagePreprocessor"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsCvMat"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceBlurDetectorAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceBlurDetectorAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#BlurDetectorAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRegionFilter -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRegionFilter">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RegionFilter"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationTflocation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePointCloudFilter -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePointCloudFilter">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PointCloudFilter"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClusterFilter -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClusterFilter">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClusterFilter"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneCluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClusterTracker -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClusterTracker">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClusterTracker"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneCluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationTracking"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceObjectIdentityResolution -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceObjectIdentityResolution">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ObjectIdentityResolution"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationShape"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneObject"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRotationalSymmetrySegmentation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRotationalSymmetrySegmentation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RotationalSymmetrySegmentation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePointCloudClusterExtractor -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePointCloudClusterExtractor">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PointCloudClusterExtractor"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPlane"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneCluster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceSegmentationResultDisplayer -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceSegmentationResultDisplayer">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#SegmentationResultDisplayer"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceImageSegmentationAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceImageSegmentationAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ImageSegmentationAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPlane"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneCluster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceBilateralSymmetryAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceBilateralSymmetryAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#BilateralSymmetryAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRotationalSymmetryAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRotationalSymmetryAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RotationalSymmetryAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceTransparentSegmentationAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceTransparentSegmentationAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#TransparentSegmentationAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPlane"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclRegionpointcloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneCluster"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceOverSegmentationAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceOverSegmentationAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#OverSegmentationAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstancePointCloudColorSegmentation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstancePointCloudColorSegmentation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#PointCloudColorSegmentation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceBilateralSymmetrySegmentation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceBilateralSymmetrySegmentation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#BilateralSymmetrySegmentation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceMoveTurnTable -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceMoveTurnTable">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#MoveTurnTable"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceSaveClusterCloudsAndImages -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceSaveClusterCloudsAndImages">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#SaveClusterCloudsAndImages"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceCaffeClassificationAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceCaffeClassificationAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#CaffeClassificationAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceUnrealTableScene -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceUnrealTableScene">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#UnrealTableScene"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceSvmAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceSvmAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#SvmAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceGbAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceGbAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#GbAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClassifyOfflineAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClassifyOfflineAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClassifyOfflineAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceRfAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceRfAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#RfAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceGetRenderedViews -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceGetRenderedViews">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#GetRenderedViews"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceClusterToPartsSegmenter -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceClusterToPartsSegmenter">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ClusterToPartsSegmenter"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceOffScreenSceneVariation -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceOffScreenSceneVariation">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#OffScreenSceneVariation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceDeCafClassifier -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceDeCafClassifier">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#DeCafClassifier"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceUnrealGTAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceUnrealGTAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#UnrealGTAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceTemplateAlignmentAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceTemplateAlignmentAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#TemplateAlignmentAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceBeliefToKnowRob -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceBeliefToKnowRob">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#BeliefToKnowRob"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceARMarkersDetector -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceARMarkersDetector">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ARMarkersDetector"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationArmarker"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceHandleAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceHandleAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#HandleAnnotator"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclPointcloud"/>
-    <requiresInput rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
-    <factResult rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationHandleannotation"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceSimatrackDetection -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceSimatrackDetection">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#SimatrackDetection"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceKnnAnnotator -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceKnnAnnotator">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#KnnAnnotator"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceShelfDetector -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceShelfDetector">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ShelfDetector"/>
-</owl:NamedIndividual>
-
-<!-- http://knowrob.org/kb/rs_components.owl#InstanceProductCounter -->
-
-<owl:NamedIndividual rdf:about="http://knowrob.org/kb/rs_components.owl#InstanceProductCounter">
-    <rdf:type rdf:resource="http://knowrob.org/kb/rs_components.owl#ProductCounter"/>
-</owl:NamedIndividual>
-
 </rdf:RDF>
 
-<!-- Generated by generateOWLDescription from the RoboSherlock project 18/05/2018-->
+<!-- Generated by generateOWLDescription from the RoboSherlock project 27/07/2018-->
