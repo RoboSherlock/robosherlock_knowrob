@@ -26,7 +26,7 @@
   build_pipeline/2,
   annotators_for_predicate/2,
   annotators_for_predicates/2,
-  build_single_pipeline_from_predicates/2
+  build_pipeline_from_predicates/2
 ]).
 
 :- rdf_meta
@@ -244,7 +244,7 @@ annotators_for_predicates(Predicates, A):-
 	annotators_for_predicate(P, A).
 
 
-build_single_pipeline_from_predicates(ListOfPredicates,Pipeline):-
+build_pipeline_from_predicates(ListOfPredicates,Pipeline):-
 	setof(X,annotators_for_predicates(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
 	build_pipeline(Annotators, TempPipeline),%same as above
 	build_pipeline(TempPipeline,P),
