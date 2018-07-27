@@ -617,9 +617,9 @@ if __name__ == "__main__":
     owl_manager.addOWLClass(OWLClass("Shape", OWLSubClassOf("VisualAppearance") ))
     owl_manager.addOWLClass(OWLClass("HandlingPoints", OWLSubClassOf("VisualAppearance") ))
 
-    owl_manager.addOWLClass(OWLClass("SmallSize", OWLSubClassOf("Size") ))
-    owl_manager.addOWLClass(OWLClass("MediumSize", OWLSubClassOf("Size") ))
-    owl_manager.addOWLClass(OWLClass("BigSize", OWLSubClassOf("Size") ))
+    owl_manager.addOWLClass(OWLClass("Small", OWLSubClassOf("Size") ))
+    owl_manager.addOWLClass(OWLClass("Medium", OWLSubClassOf("Size") ))
+    owl_manager.addOWLClass(OWLClass("Big", OWLSubClassOf("Size") ))
 
     # owl_manager.addOWLClass(OWLClass("KellogsLogo", OWLSubClassOf("Logo") ))
     # owl_manager.addOWLClass(OWLClass("MondaminLogo", OWLSubClassOf("Logo") ))
@@ -631,18 +631,11 @@ if __name__ == "__main__":
     # owl_manager.addOWLClass(OWLClass("TextPfannkuchenmix", OWLSubClassOf("TextOnObject") ))
     # owl_manager.addOWLClass(OWLClass("TextTee", OWLSubClassOf("TextOnObject") ))
 
-    owl_manager.addOWLClass(OWLClass("BoxShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("CylinderShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("CylindricalShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("SphereShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("ConeShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("RoundShape", OWLSubClassOf("Shape") ))
-
-    owl_manager.addOWLClass(OWLClass("GraspPoints", OWLSubClassOf("HandlingPoints") ))
-    owl_manager.addOWLClass(OWLClass("OpeningPoints", OWLSubClassOf("HandlingPoints") ))
-    owl_manager.addOWLClass(OWLClass("Knob", OWLSubClassOf("GraspPoints") ))
-    owl_manager.addOWLClass(OWLClass("OneHandGraspable", OWLSubClassOf("GraspPoints") ))
-    owl_manager.addOWLClass(OWLClass("TwoHandGraspable", OWLSubClassOf("GraspPoints") ))
+    owl_manager.addOWLClass(OWLClass("Box", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Cylinder", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Sphere", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Cone", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Round", OWLSubClassOf("Shape") ))
 
     # The second type of detection predicates: DetectionClues.
     # This can be things that are background knowledge about an object, for example
