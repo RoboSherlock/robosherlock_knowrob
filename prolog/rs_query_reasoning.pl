@@ -26,12 +26,16 @@
   build_pipeline/2,
   annotators_for_predicate/2,
   annotators_for_predicates/2,
-  build_pipeline_from_predicates/2
+  build_pipeline_from_predicates/2,
+  set_annotator_domain/2,
+  compute_annotator_domain/2
 ]).
 
 :- rdf_meta
    compute_annotator_inputs(r,r),
-   build_pipeline(t,t).
+   build_pipeline(t,t),
+   set_annotator_domain(t,@),
+   compute_annotator_domain(t,t).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -48,8 +52,25 @@ compute_annotators(A) :-
         not(A = 'http://knowrob.org/kb/rs_components.owl#SegmentationComponent'). 
         
 
+        
+        
 % cache the annotators
 :- forall(compute_annotators(A), assert(annotators(A)) ).
+
+
+
+% assert domain restriction for an individual generated from a RoboSherlockComponents
+set_annotator_domain(AnnotatorI, Domain):-
+    owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
+    owl_restriction_assert(restriction(rs_components:'outputDomain',all_values_from(union_of(Domain))),R),
+    rdf_assert(AnnotatorI,rdf:type,R).
+
+compute_annotator_domain(AnnotatorI, Domain):-
+    owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
+    owl_has(AnnotatorI,rdf:type,R),   
+    owl_has(R,owl:onProperty,rs_components:'outputDomain'), 
+    rdf_has(R,owl:allValuesFrom,V),owl_description(V,union_of(Domain)).
+
 
 % Get outputs of Annotator
 compute_annotator_outputs(Annotator,Output) :- 
