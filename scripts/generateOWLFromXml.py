@@ -80,7 +80,7 @@ class OWLNamedIndividual(OWLIndividual):
         super(OWLNamedIndividual, self).__init__(name,resource,relations)
 
 class OWLProperty(object):
-    def __init__(self,name,domain="",property_range="",subproperty_of=""):
+    def __init__(self,name,domain="",property_range=[],subproperty_of=""):
         self.name = name
         self.domain = domain
         self.property_range = property_range
@@ -259,7 +259,9 @@ class OWLWriteManager:
         for p in self.owl_properties:
             full_prop_name = self.namespace_prefix + "#" + p.name
             full_domain_name = self.namespace_prefix + "#" + p.domain
-            full_range_name = self.namespace_prefix + "#" + p.property_range
+            full_range_name = []
+            for pr in p.property_range:
+                full_range_name.append(self.namespace_prefix + "#" + pr)
             string += ("<owl:ObjectProperty rdf:about=\""+full_prop_name+"\">\n")
             if p.subproperty_of:
                 string += "    <rdfs:subPropertyOf rdf:resource=\"" + p.subproperty_of + "\"/>\n"
@@ -271,11 +273,27 @@ class OWLWriteManager:
                    "            <owl:onProperty rdf:resource=\""+full_prop_name+"\"/>\n"
                    "            <owl:someValuesFrom rdf:resource=\""+full_domain_name+"\"/>\n"
                    "        </owl:Restriction>\n"
-                   "   </rdfs:domain>\n"
-                   "   <rdfs:range>\n"
+                   "    </rdfs:domain>\n")
+                if len(full_range_name) == 1:
+                   string+= ("    <rdfs:range>\n"
                    "        <owl:Restriction>\n"
                    "            <owl:onProperty rdf:resource=\""+full_prop_name+"\"/>\n"
-                   "            <owl:someValuesFrom rdf:resource=\""+full_range_name+"\"/>\n"
+                   "            <owl:someValuesFrom rdf:resource=\""+full_range_name[0]+"\"/>\n"
+                   "        </owl:Restriction>\n"
+                   "   </rdfs:range>\n"
+                   "</owl:ObjectProperty>\n\n")
+                else:
+                   string += ("   <rdfs:range>\n"
+                   "        <owl:Restriction>\n"
+                   "            <owl:onProperty rdf:resource=\"" + full_prop_name + "\"/>\n"
+                   "                <owl:someValuesFrom>\n"
+                   "                    <owl:Class>\n"
+                   "                        <owl:unionOf rdf:parseType=\"Collection\">\n")
+                   for frn in full_range_name:
+                       string +=("                              <rdf:Description rdf:about=\""+frn+"\"/>\n")
+                   string += ("                     </owl:unionOf>\n"
+                   "             </owl:Class>\n"
+                   "            </owl:someValuesFrom>\n"
                    "        </owl:Restriction>\n"
                    "   </rdfs:range>\n"
                    "</owl:ObjectProperty>\n\n")
@@ -515,12 +533,12 @@ if __name__ == "__main__":
     owl_manager = OWLWriteManager("http://knowrob.org/kb/rs_components.owl","rs_components.owl")
 
     # DEPRECATED: Define the rsInput and rsOutput relation. A RoboSherlockComponent can require a RoboSherlockType or yield one as a result.
-    owl_manager.addOWLProperty( OWLObjectProperty(  INPUT_PROPERTY_NAME,"RoboSherlockComponent","RoboSherlockType") )
-    owl_manager.addOWLProperty( OWLObjectProperty( OUTPUT_PROPERTY_NAME,"RoboSherlockComponent","RoboSherlockType") )
+    owl_manager.addOWLProperty( OWLObjectProperty(  INPUT_PROPERTY_NAME,"RoboSherlockComponent",["RoboSherlockType"]) )
+    owl_manager.addOWLProperty( OWLObjectProperty( OUTPUT_PROPERTY_NAME,"RoboSherlockComponent",["RoboSherlockType"]) )
 
     # Define input/output property in KnowRob Ontology
-    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_INPUT_PROPERTY_NAME, "RoboSherlockComponent","RoboSherlockType", "&knowrob;preActors") )
-    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_OUTPUT_PROPERTY_NAME,"RoboSherlockComponent","RoboSherlockType", "&knowrob;outputs") )
+    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_INPUT_PROPERTY_NAME, "RoboSherlockComponent",["RoboSherlockType"], "&knowrob;preActors") )
+    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_OUTPUT_PROPERTY_NAME,"RoboSherlockComponent",["RoboSherlockType"], "&knowrob;outputs") )
 
     # Add all the RoboSherlock Types to the ontology
     list_of_types = getRoboSherlockTypes()
@@ -607,6 +625,10 @@ if __name__ == "__main__":
     # and the hasDetectionClue object property
     # to provide background knowledge about perceptual things
     owl_manager.addOWLProperty( OWLObjectProperty( "hasDetectionClue") )
+
+    # add property restricion on Union of classes
+    owl_manager.addOWLProperty( OWLObjectProperty( "outputDomain", "RoboSherlockComponent",["SpatialThing-Localized", "VisualAppearance"]) )
+
 
     # Create the visual appearances
     owl_manager.addOWLClass(OWLClass("VisualAppearance", OWLSubClassOf("") ))
