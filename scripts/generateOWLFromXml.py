@@ -637,7 +637,8 @@ if __name__ == "__main__":
     owl_manager.addOWLClass(OWLClass("Logo", OWLSubClassOf("VisualAppearance") ))
     owl_manager.addOWLClass(OWLClass("TextOnObject", OWLSubClassOf("VisualAppearance") ))
     owl_manager.addOWLClass(OWLClass("Shape", OWLSubClassOf("VisualAppearance") ))
-    owl_manager.addOWLClass(OWLClass("HandlingPoints", OWLSubClassOf("VisualAppearance") ))
+    owl_manager.addOWLClass(OWLClass("Color", OWLSubClassOf("VisualAppearance") ))
+    owl_manager.addOWLClass(OWLClass("handlingpoints", OWLSubClassOf("VisualAppearance") ))
 
     owl_manager.addOWLClass(OWLClass("Small", OWLSubClassOf("Size") ))
     owl_manager.addOWLClass(OWLClass("Medium", OWLSubClassOf("Size") ))
@@ -654,10 +655,21 @@ if __name__ == "__main__":
     # owl_manager.addOWLClass(OWLClass("TextTee", OWLSubClassOf("TextOnObject") ))
 
     owl_manager.addOWLClass(OWLClass("Box", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Flat", OWLSubClassOf("Shape") ))
     owl_manager.addOWLClass(OWLClass("Cylinder", OWLSubClassOf("Shape") ))
     owl_manager.addOWLClass(OWLClass("Sphere", OWLSubClassOf("Shape") ))
     owl_manager.addOWLClass(OWLClass("Cone", OWLSubClassOf("Shape") ))
     owl_manager.addOWLClass(OWLClass("Round", OWLSubClassOf("Shape") ))
+
+    owl_manager.addOWLClass(OWLClass("Yellow", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Blue", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Green", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Red", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Black", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("White", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Cyan", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Magenta", OWLSubClassOf("Color") ))
+  
 
     # The second type of detection predicates: DetectionClues.
     # This can be things that are background knowledge about an object, for example
