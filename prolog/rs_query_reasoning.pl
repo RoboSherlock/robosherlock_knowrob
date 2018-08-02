@@ -34,8 +34,8 @@
 :- rdf_meta
    compute_annotator_inputs(r,r),
    build_pipeline(t,t),
-   set_annotator_domain(t,@),
-   compute_annotator_domain(t,t).
+   set_annotator_domain(r,t),
+   compute_annotator_domain(r,t).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
