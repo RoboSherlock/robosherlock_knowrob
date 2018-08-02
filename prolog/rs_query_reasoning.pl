@@ -28,19 +28,24 @@
   annotators_for_predicates/2,
   build_pipeline_from_predicates/2,
   set_annotator_domain/2,
-  compute_annotator_domain/2
+  compute_annotator_domain/2,
+  annotator_returns_asserted_values/2
 ]).
 
 :- rdf_meta
    compute_annotator_inputs(r,r),
    build_pipeline(t,t),
    set_annotator_domain(r,t),
-   compute_annotator_domain(r,t).
+   compute_annotator_domain(r,t),
+   annotator_returns_asserted_values(r,t).
+   
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pipeline Planning
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
 
 compute_annotators(A) :- 
 	owl_subclass_of(A,rs_components:'RoboSherlockComponent'),
@@ -51,7 +56,15 @@ compute_annotators(A) :-
         not(A = 'http://knowrob.org/kb/rs_components.owl#PeopleComponent'), 
         not(A = 'http://knowrob.org/kb/rs_components.owl#SegmentationComponent'). 
         
-
+   
+annotator_returns_asserted_values(Key,A):-
+        annotators_for_predicate(Key, A), 
+        owl_individual_of(I,A),
+        compute_annotator_domain(I,DList),
+        requestedValueForKey(Key,Val),
+        member(class(D),DList),
+        rdf_global_id(Val,ValURI),
+        owl_subclass_of(D,ValURI).
         
         
 % cache the annotators
