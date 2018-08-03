@@ -29,7 +29,7 @@
   build_pipeline_from_predicates/2,
   set_annotator_domain/2,
   compute_annotator_domain/2,
-  annotator_returns_asserted_values/2
+  annotator_satisfies_domain_constraints/2
 ]).
 
 :- rdf_meta
@@ -37,7 +37,7 @@
    build_pipeline(t,t),
    set_annotator_domain(r,t),
    compute_annotator_domain(r,t),
-   annotator_returns_asserted_values(r,t).
+   annotator_satisfies_domain_constraints(r,t).
    
 
 
@@ -55,17 +55,7 @@ compute_annotators(A) :-
         not(A = 'http://knowrob.org/kb/rs_components.owl#IoComponent'), 
         not(A = 'http://knowrob.org/kb/rs_components.owl#PeopleComponent'), 
         not(A = 'http://knowrob.org/kb/rs_components.owl#SegmentationComponent'). 
-        
-   
-annotator_returns_asserted_values(Key,A):-
-        annotators_for_predicate(Key, A), 
-        owl_individual_of(I,A),
-        compute_annotator_domain(I,DList),
-        requestedValueForKey(Key,Val),
-        member(class(D),DList),
-        rdf_global_id(Val,ValURI),
-        owl_subclass_of(D,ValURI).
-        
+                
         
 % cache the annotators
 :- forall(compute_annotators(A), assert(annotators(A)) ).
@@ -272,10 +262,27 @@ annotators_for_predicate(type,A) :-
 annotators_for_predicate(cad-model,A) :-
 	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation' ).
 
+	
+	
+annotator_satisfies_domain_constraints(Key,A):-
+        annotators_for_predicate(Key, A), 
+        owl_individual_of(I,A),
+        compute_annotator_domain(I,DList),
+        requestedValueForKey(Key,Val),
+        member(class(D),DList),
+        rdf_global_id(Val,ValURI),
+        owl_subclass_of(D,ValURI).
+
 
 annotators_for_predicates(Predicates, A):-
 	member(P,Predicates), 
-	annotators_for_predicate(P, A).
+	annotator_satisfies_domain_constraints(P, A).
+
+
+% OLD implementation without domain constraings(keeping as a reference for now)
+%annotators_for_predicates(Predicates, A):-
+	%member(P,Predicates), 
+	%annotators_for_predicate(P, A).
 
 
 build_pipeline_from_predicates(ListOfPredicates,Pipeline):-
@@ -283,5 +290,3 @@ build_pipeline_from_predicates(ListOfPredicates,Pipeline):-
 	build_pipeline(Annotators, TempPipeline),%same as above
 	build_pipeline(TempPipeline,P),
 	build_pipeline(P,Pipeline).
-
-

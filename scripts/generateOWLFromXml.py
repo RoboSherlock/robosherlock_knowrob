@@ -638,11 +638,14 @@ if __name__ == "__main__":
     owl_manager.addOWLClass(OWLClass("TextOnObject", OWLSubClassOf("VisualAppearance") ))
     owl_manager.addOWLClass(OWLClass("Shape", OWLSubClassOf("VisualAppearance") ))
     owl_manager.addOWLClass(OWLClass("Color", OWLSubClassOf("VisualAppearance") ))
-    owl_manager.addOWLClass(OWLClass("handlingpoints", OWLSubClassOf("VisualAppearance") ))
+    owl_manager.addOWLClass(OWLClass("ObjectPart", OWLSubClassOf("VisualAppearance") ))
 
     owl_manager.addOWLClass(OWLClass("Small", OWLSubClassOf("Size") ))
     owl_manager.addOWLClass(OWLClass("Medium", OWLSubClassOf("Size") ))
     owl_manager.addOWLClass(OWLClass("Big", OWLSubClassOf("Size") ))
+
+
+    owl_manager.addOWLClass(OWLClass("Handle", OWLSubClassOf("ObjectPart") ))
 
     # owl_manager.addOWLClass(OWLClass("KellogsLogo", OWLSubClassOf("Logo") ))
     # owl_manager.addOWLClass(OWLClass("MondaminLogo", OWLSubClassOf("Logo") ))
