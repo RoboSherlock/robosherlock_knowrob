@@ -37,7 +37,8 @@
    build_pipeline(t,t),
    set_annotator_domain(r,t),
    compute_annotator_domain(r,t),
-   annotator_satisfies_domain_constraints(r,t).
+   annotator_satisfies_domain_constraints(r,t),
+   annotator_in_dependency_chain_of(t,t).
    
 
 
@@ -116,13 +117,15 @@ type_available(Output) :-
 %
 % Trivial case: A is in the dependency chain of D, if A provides a type that D needs.
 annotator_in_dependency_chain_of(A, D) :- 
+	annotator_inputs(D,Input),
 	annotator_outputs(A,Input),
-	annotator_inputs(D, Input).
+	owl_individual_of(_,A). %and we have an individual of A
 
 % Recursive case: A is in the Dependency chain of D, if A provides a Type
 % that X needs, and X provides a type that D needs.
-annotator_in_dependency_chain_of(A, D) :- 
+annotator_in_dependency_chain_of(A, D) :-
 	annotator_outputs(A,Input),
+	owl_individual_of(_,A),    
 	annotator_inputs(X, Input),
 	annotator_in_dependency_chain_of(X, D).
 
@@ -287,6 +290,6 @@ annotators_for_predicates(Predicates, A):-
 
 build_pipeline_from_predicates(ListOfPredicates,Pipeline):-
 	setof(X,annotators_for_predicates(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
-	build_pipeline(Annotators, TempPipeline),%same as above
-	build_pipeline(TempPipeline,P),
-	build_pipeline(P,Pipeline).
+	build_pipeline(Annotators, Pipeline).%same as above
+	%build_pipeline(TempPipeline,P),
+	%build_pipeline(P,Pipeline).

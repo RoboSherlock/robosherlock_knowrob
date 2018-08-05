@@ -19,5 +19,16 @@
 :- use_module(library(rs_similar_objects)).
 
 
+% for testing%
 
-
+%:- owl_instance_from_class(rs_components:'CollectionReader',_).
+%:- owl_instance_from_class(rs_components:'ImagePreprocessor',_).
+%:- owl_instance_from_class(rs_components:'RegionFilter',_).
+%:- owl_instance_from_class(rs_components:'NormalEstimator',_).
+%:- owl_instance_from_class(rs_components:'Cluster3DGeomatry',_).
+%
+%:- owl_instance_from_class(rs_components:'PointCloudClusterExtractor',_).
+%:- owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',I),set_annotator_domain(I,[rs_components:'Box',rs_components:'Round']).
+%:- owl_instance_from_class(rs_components:'ClusterMerger',_).
+%
+%:- assert(requestedValueForKey(shape,rs_components:'Box')).
