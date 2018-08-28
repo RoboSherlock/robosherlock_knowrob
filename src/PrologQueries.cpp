@@ -73,13 +73,21 @@ PREDICATE(cpp_execute_pipeline, 2)
     if (client.call(srv))
     {
       std::cout << "Call was successful" <<std::endl;
-      for (std::string d: srv.response.object_descriptions.obj_descriptions)
+      if(!srv.response.object_descriptions.obj_descriptions.empty()){
+      for (int i=0;i< srv.response.object_descriptions.obj_descriptions.size();++i)
       {
+	  std::string d = srv.response.object_descriptions.obj_descriptions[i];
           std::cerr<<d<<std::endl;
           if(!result.append(PlTerm(d.c_str())))
               return FALSE;
       }
-      return PL_A2  =result;
+       result.close();
+       return PL_A2  = result;
+      }
+
+      else {
+        result.close();
+	return PL_A2 = result;}
     }
     else
     {
