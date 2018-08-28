@@ -248,8 +248,6 @@ annotators_for_predicate(detection,A) :-
 	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
 annotators_for_predicate(handle,A) :- 
 	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationHandleannotation' ).
-annotators_for_predicate(cylindrical_shape,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationCylindricalshape' ).
 annotators_for_predicate(obj-part,A) :-
 	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart' ).
 annotators_for_predicate(inspect,A) :-
@@ -265,8 +263,7 @@ annotators_for_predicate(type,A) :-
 annotators_for_predicate(cad-model,A) :-
 	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation' ).
 
-	
-	
+
 annotator_satisfies_domain_constraints(Key,A):-
         annotators_for_predicate(Key, A), 
         owl_individual_of(I,A),
@@ -287,7 +284,7 @@ annotators_for_predicates(Predicates, A):-
 	%member(P,Predicates), 
 	%annotators_for_predicate(P, A).
 
-
+% given a list of predicates get a list of pipelines
 build_pipeline_from_predicates(ListOfPredicates,Pipeline):-
 	setof(X,annotators_for_predicates(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
 	build_pipeline(Annotators, Pipeline).%same as above

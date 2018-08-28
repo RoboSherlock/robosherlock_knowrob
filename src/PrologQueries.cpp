@@ -4,6 +4,7 @@
 #include <rapidjson/writer.h>
 
 #include "robosherlock_msgs/RSQueryService.h"
+#include "robosherlock_msgs/ExecutePipeline.h"
 
 #include <ros/package.h>
 
@@ -54,6 +55,37 @@ PREDICATE(cpp_query_rs, 1)
     std::cout << "Call was unsuccessful"<<std::endl;
     return FALSE;
   }
+}
+
+PREDICATE(cpp_execute_pipeline, 2)
+{
+    PlTail tail(PL_A1);
+    PlTerm e;
+    std::vector<std::string> pipeline;
+    while(tail.next(e)){
+        pipeline.push_back((char *)e);
+    }
+    ros::NodeHandle n;
+    ros::ServiceClient client = n.serviceClient<robosherlock_msgs::ExecutePipeline>("RoboSherlock/execute_pipeline");
+    robosherlock_msgs::ExecutePipeline srv;
+    srv.request.annotators = pipeline;
+    PlTail result(PL_A2);
+    if (client.call(srv))
+    {
+      std::cout << "Call was successful" <<std::endl;
+      for (std::string d: srv.response.object_descriptions.obj_descriptions)
+      {
+          std::cerr<<d<<std::endl;
+          if(!result.append(PlTerm(d.c_str())))
+              return FALSE;
+      }
+      return PL_A2  =result;
+    }
+    else
+    {
+      std::cout << "Call was unsuccessful"<<std::endl;
+      return FALSE;
+    }
 }
 
 
