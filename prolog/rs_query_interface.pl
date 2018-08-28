@@ -5,6 +5,7 @@
   rs_pause/1,
   rs_stop/0,
   execute_pipeline/1,
+  execute_pipeline/2,
   detect_json/1,
   detect/1,
   get_list_of_predicates/2, 
@@ -35,6 +36,9 @@ rs_interface(Cl):-
 execute_pipeline(_):-
    rs_interface(Cl),
    cpp_process_once(Cl).
+   
+execute_pipeline(A,R):-
+  cpp_execute_pipeline(A,R).
 
 rs_pause(A):-
    cpp_rs_pause(A).
@@ -139,7 +143,7 @@ parse_description([ A,B | Tail],D):-
 designator_type([ A,B | _ ] ):-
     designator_type([A,B],_).
 
-
+    
 detect(List):-
     %rs_interface(A),
     parse_description(List,D),
