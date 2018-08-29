@@ -17,6 +17,8 @@
 #include <string>
 #include <memory>
 
+#include <boost/algorithm/algorithm.hpp>
+
 std::string *req_desig = NULL;
 
 
@@ -31,7 +33,7 @@ PREDICATE(cpp_make_designator, 2)
 {
   std::string *desig = new std::string((char *) PL_A1);
 
-  std::cout << "Sending back: " << *desig <<std::endl;
+  std::cout << "Sending back: " << *desig << std::endl;
   return PL_A2 = static_cast<void *>(desig);
 }
 
@@ -45,55 +47,48 @@ PREDICATE(cpp_query_rs, 1)
   robosherlock_msgs::RSQueryService srv;
   std::cout << queryString->c_str() << std::endl;
   srv.request.query = queryString->c_str();
-  if (client.call(srv))
-  {
-    std::cout << "Call was successful" <<std::endl;
+  if(client.call(srv)) {
+    std::cout << "Call was successful" << std::endl;
     return TRUE;
   }
-  else
-  {
-    std::cout << "Call was unsuccessful"<<std::endl;
+  else {
+    std::cout << "Call was unsuccessful" << std::endl;
     return FALSE;
   }
 }
 
-PREDICATE(cpp_execute_pipeline, 2)
+PREDICATE(cpp_execute_pipeline, 1)
 {
-    PlTail tail(PL_A1);
-    PlTerm e;
-    std::vector<std::string> pipeline;
-    while(tail.next(e)){
-        pipeline.push_back((char *)e);
+  PlTail tail(PL_A1);
+  PlTerm e;
+  std::vector<std::string> pipeline;
+  while(tail.next(e)) {
+    std::string element((char *)e);
+    size_t hashLoc = element.find_last_of("#");
+    size_t usLoc = element.find_last_of("_");
+    if(usLoc > hashLoc) {
+      element = element.substr(hashLoc + 1, usLoc - hashLoc - 1);
     }
-    ros::NodeHandle n;
-    ros::ServiceClient client = n.serviceClient<robosherlock_msgs::ExecutePipeline>("RoboSherlock/execute_pipeline");
-    robosherlock_msgs::ExecutePipeline srv;
-    srv.request.annotators = pipeline;
-    PlTail result(PL_A2);
-    if (client.call(srv))
-    {
-      std::cout << "Call was successful" <<std::endl;
-      if(!srv.response.object_descriptions.obj_descriptions.empty()){
-      for (int i=0;i< srv.response.object_descriptions.obj_descriptions.size();++i)
-      {
-	  std::string d = srv.response.object_descriptions.obj_descriptions[i];
-          std::cerr<<d<<std::endl;
-          if(!result.append(PlTerm(d.c_str())))
-              return FALSE;
-      }
-       result.close();
-       return PL_A2  = result;
-      }
+    else {
+      element = element.substr(hashLoc + 1, element.size() - hashLoc);
+    }
+    pipeline.push_back(element);
 
-      else {
-        result.close();
-	return PL_A2 = result;}
-    }
-    else
-    {
-      std::cout << "Call was unsuccessful"<<std::endl;
-      return FALSE;
-    }
+  }
+  ros::NodeHandle n;
+  ros::ServiceClient client = n.serviceClient<robosherlock_msgs::ExecutePipeline>("RoboSherlock/execute_pipeline");
+  robosherlock_msgs::ExecutePipeline srv;
+  srv.request.annotators = pipeline;
+
+  if(client.call(srv)) {
+    std::cout << "Calling RoboSherlock/execute_pipeline was successful" << std::endl;
+  return TRUE;
+
+  }
+  else {
+    std::cout << "Calling RoboSherlock/execute_pipeline was unsuccessful" << std::endl;
+    return FALSE;
+  }
 }
 
 
@@ -101,7 +96,7 @@ PREDICATE(cpp_add_designator, 2)
 {
 
   std::string desigType((char *)PL_A1);
-  std::cout << "Desigtype: " << desigType <<std::endl;
+  std::cout << "Desigtype: " << desigType << std::endl;
 
   std::string *desig = new std::string("{\"detect\":{}}");
 
@@ -113,9 +108,9 @@ PREDICATE(cpp_init_kvp, 3)
 {
   void *obj = PL_A1;
   std::string type((char *)PL_A2);
-  std::cout <<"Type: " << type <<std::endl;
+  std::cout << "Type: " << type << std::endl;
   std::string *desig = (std::string *)(obj);
-  std::cout << "Type: " << *desig <<std::endl;
+  std::cout << "Type: " << *desig << std::endl;
   return PL_A3 = static_cast<void *>(desig);
 }
 
@@ -125,9 +120,8 @@ PREDICATE(cpp_add_kvp, 3)
   std::string value = (std::string)PL_A2;
   void *obj = PL_A3;
   std::string *desig = (std::string *)(obj);
-  std::cout  << "Desig now: " << *desig <<std::endl;
-  if(desig)
-  {
+  std::cout  << "Desig now: " << *desig << std::endl;
+  if(desig) {
     std::cout << "Adding Kvp: (" << key << " : " << value << std::endl;
     rapidjson::Document json;
     json.Parse(desig->c_str());
@@ -142,8 +136,7 @@ PREDICATE(cpp_add_kvp, 3)
     *desig = jsonString;
     return TRUE;
   }
-  else
-  {
+  else {
     return FALSE;
   }
 }
@@ -152,13 +145,11 @@ PREDICATE(cpp_print_desig, 1)
 {
   void *obj = PL_A1;
   std::string *desig = (std::string *)(obj);
-  if(desig)
-  {
+  if(desig) {
     std::cout << *desig << std::endl;
     return TRUE;
   }
-  else
-  {
+  else {
     std::cerr << "Desigantor object not initialized. Can not print" << std::endl;
     return FALSE;
   }
@@ -166,14 +157,12 @@ PREDICATE(cpp_print_desig, 1)
 
 PREDICATE(cpp_init_desig, 1)
 {
-  if(!req_desig)
-  {
+  if(!req_desig) {
     std::cerr << "Initializing designator: " << std::endl;
     req_desig =  new std::string("{\"location\":{\"location\":\"on table\"}}");
     return PL_A1 = (void *)req_desig;
   }
-  else
-  {
+  else {
     std::cerr << "Designator already initialized" << std::endl;
     return FALSE;
   }
@@ -190,14 +179,12 @@ PREDICATE(cpp_delete_desig, 1)
 
 PREDICATE(delete_desig, 1)
 {
-  if(req_desig)
-  {
+  if(req_desig) {
     delete req_desig;
     req_desig = NULL;
     return TRUE;
   }
-  else
-  {
+  else {
     return FALSE;
   }
 }
@@ -208,8 +195,7 @@ PREDICATE(write_list, 1)
   PlTail tail(PL_A1);
   PlTerm e;
 
-  while(tail.next(e))
-  {
+  while(tail.next(e)) {
     std::cout << (char *)e << std::endl;
   }
   return TRUE;

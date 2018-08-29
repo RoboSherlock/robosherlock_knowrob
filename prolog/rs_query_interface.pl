@@ -4,16 +4,22 @@
   rs_interface/2,
   rs_pause/1,
   rs_stop/0,
-  execute_pipeline/1,
-  execute_pipeline/2,
-  detect_json/1,
+  execute_pipeline/1,  
+  execute_annotator/1,
+  run_annotator/1,
+  execute_individual_of_annotator/1,
   detect/1,
   get_list_of_predicates/2, 
   parse_description/2,
   detect_new/2
 ]).
 
+:- rdf_meta
+  execute_annotator(t),
+  run_annotator(t).
+
 :- use_foreign_library('librs_prologQueries.so').
+:- use_module(library(rs_query_reasoning)).
 
 %%%%%%%%%%%%%%%% BEGIN: C++ Interface %%%%%%%%%%%%%%%%%%%%
 %%Queries written using this interface need a sanity check
@@ -31,14 +37,23 @@ rs_interface(Client,Ae) :-
     
 rs_interface(Cl):-
    rs_interf(Cl).
-
-
-execute_pipeline(_):-
-   rs_interface(Cl),
-   cpp_process_once(Cl).
    
-execute_pipeline(A,R):-
-  cpp_execute_pipeline(A,R).
+execute_pipeline(A):-
+  cpp_execute_pipeline(A).
+  
+run_annotator(A):-
+  execute_annotator(A);
+  execute_individual_of_annotator(A).
+  
+execute_annotator(A):-
+  \+owl_individual_of(A,rs_components:'RoboSherlockComponent'),
+  build_pipeline([A],P),
+  execute_pipeline(P).
+  
+execute_individual_of_annotator(A):-
+  owl_individual_of(A,C),compute_annotators(C),
+  build_pipeline([C],P),
+  execute_pipeline(P).
 
 rs_pause(A):-
    cpp_rs_pause(A).
@@ -150,11 +165,6 @@ detect(List):-
     thread_create((cpp_print_desig(D),
     cpp_query_rs(D)),_,[]).
      %thread_join(Th,Status).
-
-detect_json(Json):-
-    rs_interface,
-    cpp_make_designator(Json,Desig),
-    cpp_process_once(Desig).
 
 %%%%%%%%%%%%%%%%%%%%% NEW %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
