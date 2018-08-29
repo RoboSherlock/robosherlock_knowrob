@@ -24,19 +24,21 @@
 %%%%%%%%%%%%%%%% BEGIN: C++ Interface %%%%%%%%%%%%%%%%%%%%
 %%Queries written using this interface need a sanity check
 %%e,g,. spatial relations do not make sense inside a color determiner 
-rs_interface :-
-   rs_interface(_).
 
-:- assert(rs_interf(fail)).
+%% OLD QUERIES starting RS process from within Prolog
+%rs_interface :-
+   %rs_interface(_).
 
-rs_interface(Client,Ae) :-
-   rs_interf(fail),
-   cpp_init_ae(Client,Ae),
-   retract(rs_interf(fail)),
-   assert(rs_interf(Client)),!.
+%:- assert(rs_interf(fail)).
+
+%rs_interface(Client,Ae) :-
+   %rs_interf(fail),
+   %cpp_init_ae(Client,Ae),
+   %retract(rs_interf(fail)),
+   %assert(rs_interf(Client)),!.
     
-rs_interface(Cl):-
-   rs_interf(Cl).
+%rs_interface(Cl):-
+   %rs_interf(Cl).
    
 execute_pipeline(A):-
   cpp_execute_pipeline(A).
@@ -68,6 +70,8 @@ rs_clear_ae:-
    cpp_remove_ae(Ae),
    assert(rs_interf(fail)).
 
+   
+%%START PARSING the Query   
 %defs for syntax checks
 designator_type([an,object],'object').
 designator_type([an,obj],'object').
@@ -176,11 +180,7 @@ get_keys([H|T],L1):-
 
 rs_pipeline_from_query(Q,P):-
     get_keys(Q,Keys),
-    build_single_pipeline_from_predicates(Keys,P),!.
-
-detect_new(List,Pipeline):-
-    flatten(List,Lf),
-    rs_pipeline_from_query(Lf,Pipeline).
+    build_pipeline_from_predicates(Keys,P).
 
 %%%%%%%%%%%%%%%%%%%%% %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -191,9 +191,4 @@ get_list_of_predicates([Pred|T],[Pred|Result]):-
 	is_predicate(Pred),
 	get_list_of_predicates(T,Result).
 get_list_of_predicates([_|Tail],Result):-
-get_list_of_predicates(Tail,Result).
-
-
-
-    
-%%%%%%%%%%%%%%%% END: Java Result Queries%%%%%%%%%%%%%%%%%%%%    
+get_list_of_predicates(Tail,Result).  
