@@ -1,7 +1,7 @@
 :- module(rs_query_interface,
   [
   rs_query_keyword/1,
-  rs_interface/2,
+%  rs_interface/2,
   rs_pause/1,
   rs_stop/0,
   execute_pipeline/1,  
@@ -10,8 +10,7 @@
   execute_individual_of_annotator/1,
   detect/1,
   get_list_of_predicates/2, 
-  parse_description/2,
-  detect_new/2
+  parse_description/2
 ]).
 
 :- rdf_meta

@@ -10,7 +10,7 @@
   compute_annotator_inputs/2,
   reset_planning/0,
   annotator_outputs/2,
-  annotator_inputs/2,
+  annotator_requires_input_type/2,
   type_available/1,
   annotator_in_dependency_chain_of/2,
   dependency_chain_as_set_for_annotator/2,
@@ -25,8 +25,10 @@
   can_inputs_be_provided_for_annotator_list/1,
   build_pipeline/2,
   annotators_for_predicate/2,
-  annotators_for_predicates/2,
-  build_pipeline_from_predicates/2,
+  annotators_for_predicates_no_constraint/2,
+  annotators_satisfying_domain_constraints/2,
+  pipeline_from_predicates_with_domain_constraint/2,
+  build_pipeline_from_predicates_no_constraints/2,
   set_annotator_domain/2,
   compute_annotator_domain/2,
   annotator_satisfies_domain_constraints/2
@@ -38,7 +40,8 @@
    set_annotator_domain(r,t),
    compute_annotator_domain(r,t),
    annotator_satisfies_domain_constraints(r,t),
-   annotator_in_dependency_chain_of(t,t).
+   annotator_in_dependency_chain_of(t,t),
+   annotator_requires_input_type(t,t).
    
 
 
@@ -92,16 +95,16 @@ compute_annotator_inputs(Annotator,Input) :-
 
 % cache outputs/inputs
 :- forall(compute_annotator_outputs(A,O), assert(annotator_outputs(A,O)) ).
-:- forall(compute_annotator_inputs(A,I), assert(annotator_inputs(A,I)) ).
+:- forall(compute_annotator_inputs(A,I), assert(annotator_requires_input_type(A,I)) ).
 
 % If you changed the robot model or something else in this code,
 % call this rule to cache the annotators and their I/Os again.
 reset_planning:- retractall(annotator_outputs(_,_)),
-	retractall(annotator_inputs(_,_)),
+	retractall(annotator_requires_input_type(_,_)),
 	retractall(annotators(_)),
 	forall(compute_annotators(A), assert(annotators(A)) ),
 	forall(compute_annotator_outputs(A,O), assert(annotator_outputs(A,O)) ),
-	forall(compute_annotator_inputs(A,I), assert(annotator_inputs(A,I)) ).
+	forall(compute_annotator_inputs(A,I), assert(annotator_requires_input_type(A,I)) ).
 
 % Get every type that can be put out by any annotator
 type_available(Output) :- 
@@ -117,7 +120,7 @@ type_available(Output) :-
 %
 % Trivial case: A is in the dependency chain of D, if A provides a type that D needs.
 annotator_in_dependency_chain_of(A, D) :- 
-	annotator_inputs(D,Input),
+	annotator_requires_input_type(D,Input),
 	annotator_outputs(A,Input),
 	owl_individual_of(_,A). %and we have an individual of A
 
@@ -126,7 +129,7 @@ annotator_in_dependency_chain_of(A, D) :-
 annotator_in_dependency_chain_of(A, D) :-
 	annotator_outputs(A,Input),
 	owl_individual_of(_,A),    
-	annotator_inputs(X, Input),
+	annotator_requires_input_type(X, Input),
 	annotator_in_dependency_chain_of(X, D).
 
 % calculate the full dependency chain for a given
@@ -151,13 +154,13 @@ ordered_dependency_chain_for_annotator(Annotator,L) :-
 
 % Can an input never be satisified?
 annotator_missing_inputs(Annotator,Missing) :- 
-	findall(Input, (annotator_inputs(Annotator, Input),
+	findall(Input, (annotator_requires_input_type(Annotator, Input),
 	not(type_available(Input)) ), Missing).
 
 % Get a list caled AnnotatorSatisfyingInput, that
 % includes all annotators that provide _one_ input of Annotator A.
 annotators_satisfying_atleast_one_input(Annotator, AnnotatorSatisfyingInput):-
-	annotator_inputs(Annotator, Input),
+	annotator_requires_input_type(Annotator, Input),
 	setof(X, annotator_outputs(X,Input), AnnotatorSatisfyingInput).
 
 % Get a List of Annotators, that provide the required inputs of
@@ -201,9 +204,9 @@ can_inputs_be_provided_for_annotator_list(AnnotatorList):-
 	% check for all members of AnnotatorList
 	forall(member(R,AnnotatorList),
 	  % The Annotator doesn't need any inputs
-	  (\+ annotator_inputs(R,_) ;
+	  (\+ annotator_requires_input_type(R,_) ;
 	    % or: EVERY input will be provided by some annotator.
-	    forall(annotator_inputs(R,T), annotator_outputs(_,T))
+	    forall(annotator_requires_input_type(R,T), annotator_outputs(_,T))
 	  )
 	).
 
@@ -264,29 +267,33 @@ annotators_for_predicate(cad-model,A) :-
 	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation' ).
 
 
+% check if an annotator satisfies an asserted constraint;
 annotator_satisfies_domain_constraints(Key,A):-
         annotators_for_predicate(Key, A), 
         owl_individual_of(I,A),
         compute_annotator_domain(I,DList),
-        requestedValueForKey(Key,Val),
+        requestedValueForKey(Key,Val), % these relations get asserted when RoboSherlock starts; TODO: requested value for type; 
         member(class(D),DList),
         rdf_global_id(Val,ValURI),
         owl_subclass_of(D,ValURI).
 
-
-annotators_for_predicates(Predicates, A):-
+% Predicates : list of predicates
+% Annotators that satisfy the value constraint set ona  key;
+annotators_satisfying_domain_constraints(Predicates, A):-
 	member(P,Predicates), 
-	annotator_satisfies_domain_constraints(P, A).
+	annotator_satisfies_domain_constraints(P, A). 
+
+% given a list of predicates get a list of pipelines
+pipeline_from_predicates_with_domain_constraint(ListOfPredicates,Pipeline):-
+	setof(X,annotators_satisfying_domain_constraints(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
+	build_pipeline(Annotators, Pipeline).
 
 
 % OLD implementation without domain constraings(keeping as a reference for now)
-%annotators_for_predicates(Predicates, A):-
-	%member(P,Predicates), 
-	%annotators_for_predicate(P, A).
+annotators_for_predicates_no_constraint(Predicates, A):-
+	member(P,Predicates), 
+	annotators_for_predicate(P, A).
 
-% given a list of predicates get a list of pipelines
-build_pipeline_from_predicates(ListOfPredicates,Pipeline):-
-	setof(X,annotators_for_predicates(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
-	build_pipeline(Annotators, Pipeline).%same as above
-	%build_pipeline(TempPipeline,P),
-	%build_pipeline(P,Pipeline).
+build_pipeline_from_predicates_no_constraints(ListOfPredicates,Pipeline):-
+	setof(X,annotators_for_predicates_no_constraint(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
+	build_pipeline(Annotators, Pipeline).	
