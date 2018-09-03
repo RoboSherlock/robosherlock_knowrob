@@ -1,7 +1,5 @@
 :- module(rs_query_interface,
   [
-  rs_query_keyword/1,
-%  rs_interface/2,
   rs_pause/1,
   rs_stop/0,
   execute_pipeline/1,  
@@ -81,22 +79,7 @@ designator_type([a,location],'location').
 designator(location).
 designator(object).
 
-%keywords available
-rs_query_keyword(shape).
-rs_query_keyword(detection).
-rs_query_keyword(obj-part).
-rs_query_keyword(class).
-rs_query_keyword(size).
-rs_query_keyword(type).
-rs_query_keyword(color).
-rs_query_keyword(cad-model).
-rs_query_keyword(volume).
-rs_query_keyword(contains).
-rs_query_keyword(timestamp).
-rs_query_keyword(handle).
-rs_query_keyword(location).
 % for simplifying query writing spatial relation can also be keyword
-
 spatial_relation(on).
 spatial_relation(in).
 spatial_relation(next-to).
@@ -110,7 +93,7 @@ spatial_relation(in-front-of).
 
 % check if key can exist and add it to designator
 add_kvp(Key,Value,D):-
-    rs_query_keyword(Key),
+    rs_query_predicate(Key),
     cpp_add_kvp(Key,Value,D).
 
 % handle case when key hints at a nested designator
@@ -173,7 +156,7 @@ detect(List):-
 
 get_keys([],[]).
 get_keys([H|T],L1):-
-        rs_query_keyword(H),L1=[H|T1],get_keys(T,T1);
+        rs_query_predicate(H),L1=[H|T1],get_keys(T,T1);
         get_keys(T,L1).
 
 

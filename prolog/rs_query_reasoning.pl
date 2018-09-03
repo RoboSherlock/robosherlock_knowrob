@@ -31,7 +31,12 @@
   build_pipeline_from_predicates_no_constraints/2,
   set_annotator_domain/2,
   compute_annotator_domain/2,
-  annotator_satisfies_domain_constraints/2
+  annotator_satisfies_domain_constraints/2,
+  set_annotator_output_type_domain/3,
+  compute_annotator_output_type_domain/3,
+  compute_annotator_input_type_restriction/3,
+  rs_query_predicate/1,
+  rs_type_for_predicate/2
 ]).
 
 :- rdf_meta
@@ -41,15 +46,43 @@
    compute_annotator_domain(r,t),
    annotator_satisfies_domain_constraints(r,t),
    annotator_in_dependency_chain_of(t,t),
-   annotator_requires_input_type(t,t).
-   
+   annotator_requires_input_type(t,t),
+   set_annotator_output_type_domain(r,t,r),
+   compute_annotator_output_type_domain(r,r,t),
+   rs_query_predicate(+),
+   rs_type_for_predicate(+,r),
+   new_annotator_satisfies_domain_constraints(r,t).   
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pipeline Planning
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% START: query predicates available and mapping to RS types
+rs_query_predicate(shape).
+rs_query_predicate(color).
+rs_query_predicate(size).
+rs_query_predicate(detection).
+rs_query_predicate(class).
+rs_query_predicate(type).
+rs_query_predicate(obj-part).
 
+rs_query_predicate(cad-model).
+rs_query_predicate(volume).
+rs_query_predicate(contains).
+rs_query_predicate(timestamp).
+rs_query_predicate(location).
+
+rs_type_for_predicate(shape, rs_components:'RsAnnotationShape').
+rs_type_for_predicate(color, rs_components:'RsAnnotationGeometry').
+rs_type_for_predicate(size, rs_components:'RsAnnotationGeometry').
+rs_type_for_predicate(detection, rs_components:'RsAnnotationDetection').
+rs_type_for_predicate(class, rs_components:'RsAnnotationClassification').
+rs_type_for_predicate(class, rs_components:'RsAnnotationDetection').
+rs_type_for_predicate(type, rs_components:'RsAnnotationClassification').
+rs_type_for_predicate(type, rs_components:'RsAnnotationDetection').
+
+% END: query predicates available and mapping to RS types
 
 compute_annotators(A) :- 
 	owl_subclass_of(A,rs_components:'RoboSherlockComponent'),
@@ -58,12 +91,11 @@ compute_annotators(A) :-
         not(A = 'http://knowrob.org/kb/rs_components.owl#DetectionComponent'), 
         not(A = 'http://knowrob.org/kb/rs_components.owl#IoComponent'), 
         not(A = 'http://knowrob.org/kb/rs_components.owl#PeopleComponent'), 
-        not(A = 'http://knowrob.org/kb/rs_components.owl#SegmentationComponent'). 
+        not(A = 'http://knowrob.org/kb/rs_components.owl#SegmentationComponent').
                 
         
 % cache the annotators
 :- forall(compute_annotators(A), assert(annotators(A)) ).
-
 
 
 % assert domain restriction for an individual generated from a RoboSherlockComponents
@@ -76,6 +108,36 @@ compute_annotator_domain(AnnotatorI, Domain):-
     owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
     owl_has(AnnotatorI,rdf:type,R),   
     owl_has(R,owl:onProperty,rs_components:'outputDomain'), 
+    rdf_has(R,owl:allValuesFrom,V),owl_description(V,union_of(Domain)).
+
+%%%% set a domain constraint on the type of the annotator e.g. Primitive Shape annotator returns Shape annotations with value one of [a,b,c]
+%%%% 
+set_annotator_output_type_domain(AnnotatorI, Domain, Type):-
+    owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
+    owl_individual_of(AnnotatorI,Annotator),!,
+    compute_annotator_outputs(Annotator, Type),%% you can only set this restriction if the Type is defined as an output type 
+    owl_restriction_assert(restriction(Type,all_values_from(union_of(Domain))),R),
+    rdf_assert(AnnotatorI,rdf:type,R).
+    
+set_annotator_input_type_constraint(AnnotatorI, Constraint, Type):-
+    owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
+    owl_restriction_assert(restriction(Type,all_values_from(union_of(Constraint))),R),
+    rdf_assert(AnnotatorI,rdf:type,R).
+
+compute_annotator_output_type_domain(AnnotatorI, Type, Domain):-
+    owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
+    owl_individual_of(AnnotatorI,Annotator),!,
+    compute_annotator_outputs(Annotator, Type),
+    owl_has(AnnotatorI,rdf:type,R),   
+    owl_has(R,owl:onProperty,Type), 
+    rdf_has(R,owl:allValuesFrom,V),owl_description(V,union_of(Domain)).
+    
+compute_annotator_input_type_restriction(AnnotatorI, Type, Domain):-
+    owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
+    owl_individual_of(AnnotatorI,Annotator),!,
+    compute_annotator_inputs(Annotator, Type),
+    owl_has(AnnotatorI,rdf:type,R),   
+    owl_has(R,owl:onProperty,Type), 
     rdf_has(R,owl:allValuesFrom,V),owl_description(V,union_of(Domain)).
 
 
@@ -229,43 +291,53 @@ build_pipeline(ListOfAnnotators,EvaluationList):-
 	; write('** WARNING: One or more inputs of the given List of Annotators can not be computed by an Algorithm in the KnowledgeBase **'),
 	fail.
 
-
 % Map a predefined set of predicates to Annotator Outputs
-annotators_for_predicate(shape,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationShape' ).
-annotators_for_predicate(color,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor' ).
-annotators_for_predicate(size,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry' ).
-annotators_for_predicate(location,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationTflocation' ).
-annotators_for_predicate(logo,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
-annotators_for_predicate(text,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
-annotators_for_predicate(product,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
-annotators_for_predicate(class,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
-annotators_for_predicate(detection,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
-annotators_for_predicate(handle,A) :- 
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationHandleannotation' ).
-annotators_for_predicate(obj-part,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart' ).
-annotators_for_predicate(inspect,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart' ).
-annotators_for_predicate(contains,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosAcatSubstance' ).
-annotators_for_predicate(volume,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosAcatVolume' ).
-annotators_for_predicate(ingredient,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosRobohowPizza' ).
-annotators_for_predicate(type,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
-annotators_for_predicate(cad-model,A) :-
-	annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation' ).
+annotators_for_predicate(P,A) :-
+        rs_type_for_predicate(P,T),
+	annotator_outputs(A, T).
 
+%annotators_for_predicate(color,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor' ).
+%annotators_for_predicate(size,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry' ).
+%annotators_for_predicate(location,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationTflocation' ).
+%annotators_for_predicate(logo,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
+%annotators_for_predicate(text,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
+%annotators_for_predicate(product,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
+%annotators_for_predicate(class,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
+%annotators_for_predicate(detection,A) :- 
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
+
+%annotators_for_predicate(obj-part,A) :-
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart' ).
+%annotators_for_predicate(inspect,A) :-
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart' ).
+%annotators_for_predicate(contains,A) :-
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosAcatSubstance' ).
+%annotators_for_predicate(volume,A) :-
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosAcatVolume' ).
+%annotators_for_predicate(ingredient,A) :-
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosRobohowPizza' ).
+%nanotators_for_predicate(type,A) :-
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
+%annotators_for_predicate(cad-model,A) :-
+	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation' ).
+
+
+new_annotator_satisfies_domain_constraints(Key,A):-
+        annotators_for_predicate(Key, A),
+	rs_type_for_predicate(Key, Type),
+        owl_individual_of(I,A),
+        compute_annotator_output_type_domain(I,Type,DList),
+        requestedValueForKey(Key,Val), % these relations get asserted when RoboSherlock starts; TODO: requested value for type; 
+        member(class(D),DList),
+        rdf_global_id(Val,ValURI),
+        owl_subclass_of(D,ValURI).
 
 % check if an annotator satisfies an asserted constraint;
 annotator_satisfies_domain_constraints(Key,A):-
