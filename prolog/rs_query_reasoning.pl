@@ -74,7 +74,7 @@ rs_query_predicate(timestamp).
 rs_query_predicate(location).
 
 rs_type_for_predicate(shape, rs_components:'RsAnnotationShape').
-rs_type_for_predicate(color, rs_components:'RsAnnotationGeometry').
+rs_type_for_predicate(color, rs_components:'RsAnnotationSemanticcolor').
 rs_type_for_predicate(size, rs_components:'RsAnnotationGeometry').
 rs_type_for_predicate(detection, rs_components:'RsAnnotationDetection').
 rs_type_for_predicate(class, rs_components:'RsAnnotationClassification').
