@@ -30,9 +30,9 @@
   pipeline_from_predicates_with_domain_constraint/2,
   build_pipeline_from_predicates_no_constraints/2,
   set_annotator_domain/2,
-  compute_annotator_domain/2,
   annotator_satisfies_domain_constraints/2,
   set_annotator_output_type_domain/3,
+  set_annotator_input_type_constraint/3,
   compute_annotator_output_type_domain/3,
   compute_annotator_input_type_restriction/3,
   rs_query_predicate/1,
@@ -43,15 +43,14 @@
    compute_annotator_inputs(r,r),
    build_pipeline(t,t),
    set_annotator_domain(r,t),
-   compute_annotator_domain(r,t),
    annotator_satisfies_domain_constraints(r,t),
    annotator_in_dependency_chain_of(t,t),
    annotator_requires_input_type(t,t),
    set_annotator_output_type_domain(r,t,r),
+   set_annotator_input_type_constraint(r,t,r),
    compute_annotator_output_type_domain(r,r,t),
    rs_query_predicate(+),
-   rs_type_for_predicate(+,r),
-   new_annotator_satisfies_domain_constraints(r,t).   
+   rs_type_for_predicate(+,r).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -103,12 +102,6 @@ set_annotator_domain(AnnotatorI, Domain):-
     owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
     owl_restriction_assert(restriction(rs_components:'outputDomain',all_values_from(union_of(Domain))),R),
     rdf_assert(AnnotatorI,rdf:type,R).
-
-compute_annotator_domain(AnnotatorI, Domain):-
-    owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
-    owl_has(AnnotatorI,rdf:type,R),   
-    owl_has(R,owl:onProperty,rs_components:'outputDomain'), 
-    rdf_has(R,owl:allValuesFrom,V),owl_description(V,union_of(Domain)).
 
 %%%% set a domain constraint on the type of the annotator e.g. Primitive Shape annotator returns Shape annotations with value one of [a,b,c]
 %%%% 
@@ -329,7 +322,7 @@ annotators_for_predicate(P,A) :-
 	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation' ).
 
 
-new_annotator_satisfies_domain_constraints(Key,A):-
+annotator_satisfies_domain_constraints(Key,A):-
         annotators_for_predicate(Key, A),
 	rs_type_for_predicate(Key, Type),
         owl_individual_of(I,A),
@@ -338,16 +331,7 @@ new_annotator_satisfies_domain_constraints(Key,A):-
         member(class(D),DList),
         rdf_global_id(Val,ValURI),
         owl_subclass_of(D,ValURI).
-
-% check if an annotator satisfies an asserted constraint;
-annotator_satisfies_domain_constraints(Key,A):-
-        annotators_for_predicate(Key, A), 
-        owl_individual_of(I,A),
-        compute_annotator_domain(I,DList),
-        requestedValueForKey(Key,Val), % these relations get asserted when RoboSherlock starts; TODO: requested value for type; 
-        member(class(D),DList),
-        rdf_global_id(Val,ValURI),
-        owl_subclass_of(D,ValURI).
+  
 
 % Predicates : list of predicates
 % Annotators that satisfy the value constraint set ona  key;
