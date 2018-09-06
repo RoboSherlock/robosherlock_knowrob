@@ -36,7 +36,8 @@
   compute_annotator_output_type_domain/3,
   compute_annotator_input_type_restriction/3,
   rs_query_predicate/1,
-  rs_type_for_predicate/2
+  rs_type_for_predicate/2,
+  new_planning/2
 ]).
 
 :- rdf_meta
@@ -49,6 +50,7 @@
    set_annotator_output_type_domain(r,t,r),
    set_annotator_input_type_constraint(r,t,r),
    compute_annotator_output_type_domain(r,r,t),
+   compute_annotator_input_type_restriction(r,r,t),
    rs_query_predicate(+),
    rs_type_for_predicate(+,r).
 
@@ -114,6 +116,8 @@ set_annotator_output_type_domain(AnnotatorI, Domain, Type):-
     
 set_annotator_input_type_constraint(AnnotatorI, Constraint, Type):-
     owl_individual_of(AnnotatorI,rs_components:'RoboSherlockComponent'),
+    owl_individual_of(AnnotatorI,Annotator),!,
+    compute_annotator_inputs(Annotator, Type),%% you can only set this restriction if the Type is defined as an output type 
     owl_restriction_assert(restriction(Type,all_values_from(union_of(Constraint))),R),
     rdf_assert(AnnotatorI,rdf:type,R).
 
@@ -136,17 +140,13 @@ compute_annotator_input_type_restriction(AnnotatorI, Type, Domain):-
 
 % Get outputs of Annotator
 compute_annotator_outputs(Annotator,Output) :- 
-	% current_robot(R),!,
 	annotators(Annotator), 
 	owl_class_properties(Annotator,rs_components:'perceptualOutput',Output).
-	%  action_feasible_on_robot(Annotator, R).
 
 % Get inputs of Annotator
 compute_annotator_inputs(Annotator,Input) :- 
-	% current_robot(R),!,
 	annotators(Annotator), 
 	owl_class_properties(Annotator,rs_components:'perceptualInputRequired',Input).
-	%  action_feasible_on_robot(Annotator, R).
 
 % cache outputs/inputs
 :- forall(compute_annotator_outputs(A,O), assert(annotator_outputs(A,O)) ).
@@ -165,6 +165,16 @@ reset_planning:- retractall(annotator_outputs(_,_)),
 type_available(Output) :- 
 	annotator_outputs(_,Output).
 
+	
+input_constraints_satisfied(Di, InputType, Ai):-
+    compute_annotator_input_type_restriction(Di,InputType,Restriction) ->
+      (
+      compute_annotator_output_type_domain(Ai,InputType,Domain),
+      write('outputDomain: '),writeln(Domain),
+      write('inputRestriction:'),writeln(Restriction),
+      member(R, Restriction),member(R,Domain),writeln('Yay')
+     );
+     true.
 % Check if Annotator A is somewhere in the Depedency chain of D.
 % This means for example in RoboSherlock, where the CollectionReader should be at
 % the first place in every pipeline:
@@ -175,9 +185,11 @@ type_available(Output) :-
 %
 % Trivial case: A is in the dependency chain of D, if A provides a type that D needs.
 annotator_in_dependency_chain_of(A, D) :- 
-	annotator_requires_input_type(D,Input),
-	annotator_outputs(A,Input),
-	owl_individual_of(_,A). %and we have an individual of A
+	owl_individual_of(Di, D),
+	annotator_requires_input_type(D,InputType),
+	annotator_outputs(A,InputType),
+	owl_individual_of(Ai,A), %and we have an individual of A
+	input_constraints_satisfied(Di,InputType, Ai).
 
 % Recursive case: A is in the Dependency chain of D, if A provides a Type
 % that X needs, and X provides a type that D needs.
@@ -289,38 +301,6 @@ annotators_for_predicate(P,A) :-
         rs_type_for_predicate(P,T),
 	annotator_outputs(A, T).
 
-%annotators_for_predicate(color,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor' ).
-%annotators_for_predicate(size,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGeometry' ).
-%annotators_for_predicate(location,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationTflocation' ).
-%annotators_for_predicate(logo,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
-%annotators_for_predicate(text,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
-%annotators_for_predicate(product,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationGoggles' ).
-%annotators_for_predicate(class,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
-%annotators_for_predicate(detection,A) :- 
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
-
-%annotators_for_predicate(obj-part,A) :-
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart' ).
-%annotators_for_predicate(inspect,A) :-
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationClusterpart' ).
-%annotators_for_predicate(contains,A) :-
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosAcatSubstance' ).
-%annotators_for_predicate(volume,A) :-
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosAcatVolume' ).
-%annotators_for_predicate(ingredient,A) :-
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsdemosRobohowPizza' ).
-%nanotators_for_predicate(type,A) :-
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationDetection' ).
-%annotators_for_predicate(cad-model,A) :-
-	%annotator_outputs(A,'http://knowrob.org/kb/rs_components.owl#RsAnnotationPoseannotation' ).
-
 
 annotator_satisfies_domain_constraints(Key,A):-
         annotators_for_predicate(Key, A),
@@ -344,7 +324,17 @@ pipeline_from_predicates_with_domain_constraint(ListOfPredicates,Pipeline):-
 	setof(X,annotators_satisfying_domain_constraints(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
 	build_pipeline(Annotators, Pipeline).
 
-
+new_planning(ListOfPredicates,ResultPipeline):-
+	pipeline_from_predicates_with_domain_constraint(ListOfPredicates,Pipeline),
+	member(A,Pipeline),owl_individual_of(Ai,A),
+	compute_annotator_input_type_restriction(Ai,T,D) ->
+	 (print('One or more annotators have input type restrictions. now what'));
+	ResultPipeline = P.
+	
+% filter the pipeline based on input restrictions
+	
+	
+	
 % OLD implementation without domain constraings(keeping as a reference for now)
 annotators_for_predicates_no_constraint(Predicates, A):-
 	member(P,Predicates), 

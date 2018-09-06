@@ -21,14 +21,18 @@
 
 % for testing%
 
-%:- owl_instance_from_class(rs_components:'CollectionReader',_).
-%:- owl_instance_from_class(rs_components:'ImagePreprocessor',_).
-%:- owl_instance_from_class(rs_components:'RegionFilter',_).
-%:- owl_instance_from_class(rs_components:'NormalEstimator',_).
-%:- owl_instance_from_class(rs_components:'Cluster3DGeomatry',_).
-%
-%:- owl_instance_from_class(rs_components:'PointCloudClusterExtractor',_).
-%:- owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',I),set_annotator_domain(I,[rs_components:'Box',rs_components:'Round']).
-%:- owl_instance_from_class(rs_components:'ClusterMerger',_).
-%
-%:- assert(requestedValueForKey(shape,rs_components:'Box')).
+:- owl_instance_from_class(rs_components:'CollectionReader',_).
+:- owl_instance_from_class(rs_components:'ImagePreprocessor',_).
+:- owl_instance_from_class(rs_components:'RegionFilter',_).
+:- owl_instance_from_class(rs_components:'NormalEstimator',_).
+:- owl_instance_from_class(rs_components:'Cluster3DGeometry',_).
+
+:- owl_instance_from_class(rs_components:'PointCloudClusterExtractor',_).
+:- owl_instance_from_class(rs_components:'ClusterMerger',_).
+:- owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape').
+:- owl_instance_from_class(rs_components:'SacModelAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'), set_annotator_input_type_constraint(I,[rs_components:'Black'],rs_components:'RsAnnotationSemanticcolor').
+:- owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',I),set_annotator_output_type_domain(I,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor').
+
+
+:- assert(requestedValueForKey(shape,rs_components:'Cylinder')).
+
