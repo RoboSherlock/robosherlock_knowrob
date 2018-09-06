@@ -36,8 +36,7 @@
   compute_annotator_output_type_domain/3,
   compute_annotator_input_type_restriction/3,
   rs_query_predicate/1,
-  rs_type_for_predicate/2,
-  new_planning/2
+  rs_type_for_predicate/2
 ]).
 
 :- rdf_meta
@@ -165,7 +164,11 @@ reset_planning:- retractall(annotator_outputs(_,_)),
 type_available(Output) :- 
 	annotator_outputs(_,Output).
 
-	
+
+% Di - annotator requiring input
+% Type of Inpute
+% Ai - annotator providing output
+% this rule gets called only for pairs of Di, Ai where Ai produces a type that Di needs; 
 input_constraints_satisfied(Di, InputType, Ai):-
     compute_annotator_input_type_restriction(Di,InputType,Restriction) ->
       (
@@ -175,6 +178,7 @@ input_constraints_satisfied(Di, InputType, Ai):-
       member(R, Restriction),member(R,Domain),writeln('Yay')
      );
      true.
+
 % Check if Annotator A is somewhere in the Depedency chain of D.
 % This means for example in RoboSherlock, where the CollectionReader should be at
 % the first place in every pipeline:
@@ -194,10 +198,11 @@ annotator_in_dependency_chain_of(A, D) :-
 % Recursive case: A is in the Dependency chain of D, if A provides a Type
 % that X needs, and X provides a type that D needs.
 annotator_in_dependency_chain_of(A, D) :-
-	annotator_outputs(A,Input),
+	annotator_outputs(A,InputType),
 	owl_individual_of(_,A),    
-	annotator_requires_input_type(X, Input),
+	annotator_requires_input_type(X, InputType),
 	annotator_in_dependency_chain_of(X, D).
+	
 
 % calculate the full dependency chain for a given
 % Annotator, include the annotator itself. The chain 
@@ -269,13 +274,22 @@ get_missing_annotators(AnnotatorList, ResultList):-
 % If the Annotator doesn't require any inputs, the method will be true.
 can_inputs_be_provided_for_annotator_list(AnnotatorList):-
 	% check for all members of AnnotatorList
-	forall(member(R,AnnotatorList),
-	  % The Annotator doesn't need any inputs
-	  (\+ annotator_requires_input_type(R,_) ;
-	    % or: EVERY input will be provided by some annotator.
-	    forall(annotator_requires_input_type(R,T), annotator_outputs(_,T))
-	  )
+	forall(member(R,AnnotatorList),can_inputs_be_provided_for_annotator(R)
 	).
+	
+% Check, if the required inputs of an Annotator
+% can be provided by any of the Annotators in the System.
+% If the Annotator doesn't require any inputs, the method will be true.
+can_inputs_be_provided_for_annotator(Annotator):-
+    % The Annotator doesn't need any inputs
+    \+ annotator_requires_input_type(Annotator,_) ;
+	% or: EVERY input will be provided by some annotator.
+    forall(
+            annotator_requires_input_type(Annotator,T), 
+            (annotator_outputs(D,T),
+            owl_individual_of(Ri,Annotator),owl_individual_of(Di,D),
+            input_constraints_satisfied(Ri, T, Di))
+        ).
 
 % TODO: Consistency Checks! Check the dependency graph for the absence of cycles.
 % TODO: Test with multiple inputs 
@@ -299,12 +313,12 @@ build_pipeline(ListOfAnnotators,EvaluationList):-
 % Map a predefined set of predicates to Annotator Outputs
 annotators_for_predicate(P,A) :-
         rs_type_for_predicate(P,T),
-	annotator_outputs(A, T).
+        annotator_outputs(A, T).
 
 
 annotator_satisfies_domain_constraints(Key,A):-
         annotators_for_predicate(Key, A),
-	rs_type_for_predicate(Key, Type),
+        rs_type_for_predicate(Key, Type),
         owl_individual_of(I,A),
         compute_annotator_output_type_domain(I,Type,DList),
         requestedValueForKey(Key,Val), % these relations get asserted when RoboSherlock starts; TODO: requested value for type; 
@@ -322,17 +336,8 @@ annotators_satisfying_domain_constraints(Predicates, A):-
 % given a list of predicates get a list of pipelines
 pipeline_from_predicates_with_domain_constraint(ListOfPredicates,Pipeline):-
 	setof(X,annotators_satisfying_domain_constraints(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
-	build_pipeline(Annotators, Pipeline).
-
-new_planning(ListOfPredicates,ResultPipeline):-
-	pipeline_from_predicates_with_domain_constraint(ListOfPredicates,Pipeline),
-	member(A,Pipeline),owl_individual_of(Ai,A),
-	compute_annotator_input_type_restriction(Ai,T,D) ->
-	 (print('One or more annotators have input type restrictions. now what'));
-	ResultPipeline = P.
-	
-% filter the pipeline based on input restrictions
-	
+	build_pipeline(Annotators, Pipeline),
+	forall(member(P,Pipeline), can_inputs_be_provided_for_annotator(P)).
 	
 	
 % OLD implementation without domain constraings(keeping as a reference for now)
