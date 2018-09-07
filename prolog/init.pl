@@ -21,27 +21,27 @@
 
 % for testing%
 
-:- owl_instance_from_class(rs_components:'CollectionReader',_).
-:- owl_instance_from_class(rs_components:'ImagePreprocessor',_).
-:- owl_instance_from_class(rs_components:'RegionFilter',_).
-:- owl_instance_from_class(rs_components:'NormalEstimator',_).
-:- owl_instance_from_class(rs_components:'PlaneAnnotator',_).
+%:- owl_instance_from_class(rs_components:'CollectionReader',_).
+%:- owl_instance_from_class(rs_components:'ImagePreprocessor',_).
+%:- owl_instance_from_class(rs_components:'RegionFilter',_).
+%:- owl_instance_from_class(rs_components:'NormalEstimator',_).
+%:- owl_instance_from_class(rs_components:'PlaneAnnotator',_).
 
 
-:- owl_instance_from_class(rs_components:'ImageSegmentationAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Round'],rs_components:'RsSceneCluster').
-:- owl_instance_from_class(rs_components:'PointCloudClusterExtractor',I),set_annotator_output_type_domain(I,[rs_components:'Box'],rs_components:'RsSceneCluster').
+%:- owl_instance_from_class(rs_components:'ImageSegmentationAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Round'],rs_components:'RsSceneCluster').
+%:- owl_instance_from_class(rs_components:'PointCloudClusterExtractor',I),set_annotator_output_type_domain(I,[rs_components:'Box'],rs_components:'RsSceneCluster').
 
 
-:- owl_instance_from_class(rs_components:'ClusterMerger',I),set_annotator_input_type_constraint(I,[rs_components:'Flat'],rs_components:'RsSceneCluster').
-# :- owl_instance_from_class(rs_components:'ClusterFilter',_).
+%:- owl_instance_from_class(rs_components:'ClusterMerger',I),set_annotator_input_type_constraint(I,[rs_components:'Flat'],rs_components:'RsSceneCluster').
+%% :- owl_instance_from_class(rs_components:'ClusterFilter',_).
 
-:- owl_instance_from_class(rs_components:'Cluster3DGeometryAnnotator',_).
+%:- owl_instance_from_class(rs_components:'Cluster3DGeometryAnnotator',_).
 
-:- owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),set_annotator_output_type_domain(I,[rs_components:'Red',rs_components:'Green'],rs_components:'RsAnnotationSemanticcolor').
+%:- owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),set_annotator_output_type_domain(I,[rs_components:'Red',rs_components:'Green'],rs_components:'RsAnnotationSemanticcolor').
 
-:- owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',I),set_annotator_output_type_domain(I,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor').
+%:- owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',I),set_annotator_output_type_domain(I,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor').
 
-:- owl_instance_from_class(rs_components:'SacModelAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'), set_annotator_input_type_constraint(I,[rs_components:'Red'],rs_components:'RsAnnotationSemanticcolor').
+%:- owl_instance_from_class(rs_components:'SacModelAnnotator',I),set_annotator_output_type_domain(I,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'), set_annotator_input_type_constraint(I,[rs_components:'Red'],rs_components:'RsAnnotationSemanticcolor').
 
-:- assert(requestedValueForKey(shape,rs_components:'Cylinder')).
+%:- assert(requestedValueForKey(shape,rs_components:'Cylinder')).
 
