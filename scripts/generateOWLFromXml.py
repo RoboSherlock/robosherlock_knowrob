@@ -14,6 +14,8 @@ from os import listdir
 from os.path import isfile, join
 from lxml import etree
 
+import yaml
+
 
 NS = "{http://uima.apache.org/resourceSpecifier}"
 INDIVIDUAL_PREFIX = "Instance"
@@ -401,7 +403,6 @@ def getTSPaths():
 
 
 def getpackagepaths():
-
     rospack = rospkg.RosPack()
     paths = []
     paths.append(rospack.get_path('robosherlock'))
@@ -420,42 +421,35 @@ def getAnnotatorIOs(filepath):
     Returns: A tuple of that form: (list-of-inputs, list-of-outputs)"""
     outputs = []
     inputs = []
-    tree = etree.parse(filepath)
-    root = tree.getroot()
-    for element in root.iter("*"):
-        if element.tag == NS+'sofaName':
-            # print "sofaName: "+ element.text
-            inputs.append(element.text)
-        if element.tag == NS+'capability':
-            t = {}
-            for e in element:
-                if e.tag == NS + 'outputs':
-                    for types in e.findall(NS+'type'):
-                        # print "Output Type: " + types.text
-                        outputs.append(types.text)
+    print filepath
+    stream = open(filepath, "r")
+    docs = yaml.load(stream)
+
+    if not docs.has_key('capabilities'):
+        print 'there are no capabilities defined for this annotator'
+        return (inputs, outputs)
+    if not isinstance(docs['capabilities'],dict):
+        print 'Capabilities is not a dict. Exiting'
+        return (inputs,outputs)
+    if docs['capabilities'].has_key('inputs'):
+        inputlist = docs['capabilities']['inputs']
+        for i in inputlist:
+            if isinstance(i, dict):
+                for key in i:
+                    inputs.append(key)
+            else:
+                inputs.append(i)
+
+    if docs['capabilities'].has_key('outputs'):
+        outputlist = docs['capabilities']['outputs']
+        for o in outputlist:
+            if isinstance(o, dict):
+                for key in o:
+                    outputs.append(key)
+            else:
+                outputs.append(o)
     return (inputs,outputs)
 
-def getAnnotatorRequirements(filepath):
-    """Fetch the requirements of a Annotator from the annotator definition. Input: full filepath for a annotator
-    description XML. It looks for "Requires CAPABILITYNAME" or "RequiresCAPABILITYNAME' in the 'description'
-    field of the annotator XML. The usable Capabilitynames are defined at the heading of this file
-    and should comply with the Capability Names in the rs_components.owl (robosherlock_knowrob package)
-    below the PerceptionCapability class.
-    Returns: A list of required Capabilities"""
-    outputs = []
-    inputs = []
-    tree = etree.parse(filepath)
-    root = tree.getroot()
-    required_capabilities = []
-
-    for element in root.iter("*"):
-        if element.tag == NS+'description' and element.text:
-            # print "description: "+ element.text
-            for cap in ACCEPTABLE_PERCEPTION_CAPABILITY_NAMES:
-                if "Requires"+cap in element.text or "Requires "+cap in element.text:
-                    required_capabilities.append(cap)
-
-    return required_capabilities
 
 def getAnnotatorNames():
 
@@ -475,27 +469,25 @@ def getAnnotatorNames():
             for filename in os.listdir(subdirpath):
                  filepath = os.path.join(subdirpath, filename)
                  (name,ext) = os.path.splitext(filename)
-                 if not os.path.isfile(filepath) or ext != ".xml":
+                 if not os.path.isfile(filepath) or ext != ".yaml":
                      continue;
 
                  annotators.append(Annotator(name, subdir))
                  # annotators.append((subdir,name))
                  # print "Annotator:" + filepath
                  (inputs,outputs) = getAnnotatorIOs(filepath)
-                 annotators[-1].required_capabilities = getAnnotatorRequirements(filepath)
                  annotators[-1].inputs = inputs
                  annotators[-1].outputs = outputs
         for filename in os.listdir(p):
             filepath = os.path.join(p, filename)
             (name,ext) = os.path.splitext(filename)
-            if not os.path.isfile(filepath) or ext != ".xml":
+            if not os.path.isfile(filepath) or ext != ".yaml":
                 continue;
             # annotators.append(('RoboSherlock',name))
             annotators.append(Annotator(name, 'RoboSherlock'))
             # print "Annotator:" + filepath
             # getAnnotatorIOs(filepath)
             (inputs,outputs) = getAnnotatorIOs(filepath)
-            annotators[-1].required_capabilities = getAnnotatorRequirements(filepath)
             annotators[-1].inputs = inputs
             annotators[-1].outputs = outputs
     return (atypes,annotators)
