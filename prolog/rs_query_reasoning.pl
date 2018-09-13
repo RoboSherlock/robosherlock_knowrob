@@ -199,8 +199,10 @@ annotator_in_dependency_chain_of(A, D) :-
 % that X needs, and X provides a type that D needs.
 annotator_in_dependency_chain_of(A, D) :-
 	annotator_outputs(A,InputType),
-	owl_individual_of(_,A),    
+	owl_individual_of(Ai,A),    
 	annotator_requires_input_type(X, InputType),
+	owl_individual_of(Xi,X),
+	input_constraints_satisfied(Xi,InputType,Ai),
 	annotator_in_dependency_chain_of(X, D).
 	
 
