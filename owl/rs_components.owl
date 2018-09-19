@@ -1187,12 +1187,6 @@
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualOutput"/>
-                <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualOutput"/>
                 <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationShape"/>
             </owl:Restriction>
         </rdfs:subClassOf>
