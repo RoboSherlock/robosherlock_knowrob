@@ -28,6 +28,7 @@
   annotators_for_predicates_no_constraint/2,
   annotators_satisfying_domain_constraints/2,
   pipeline_from_predicates_with_domain_constraint/2,
+  pipeline_for_key_value_pair/2,
   build_pipeline_from_predicates_no_constraints/2,
   set_annotator_domain/2,
   annotator_satisfies_domain_constraints/2,
@@ -36,10 +37,14 @@
   compute_annotator_output_type_domain/3,
   compute_annotator_input_type_restriction/3,
   rs_query_predicate/1,
-  rs_type_for_predicate/2
+  rs_type_for_predicate/2,
+  assert_test_pipeline/0,
+  retract_all_annotators/0,
+  retract_query_assertions/0
 ]).
 
 :- rdf_meta
+   annotator_outputs(r,r),
    compute_annotator_inputs(r,r),
    build_pipeline(t,t),
    set_annotator_domain(r,t),
@@ -173,9 +178,9 @@ input_constraints_satisfied(Di, InputType, Ai):-
     compute_annotator_input_type_restriction(Di,InputType,Restriction) ->
       (
       compute_annotator_output_type_domain(Ai,InputType,Domain),
-      write('outputDomain: '),writeln(Domain),
-      write('inputRestriction:'),writeln(Restriction),
-      member(R, Restriction),member(R,Domain),writeln('Yay')
+      %write('outputDomain: '),writeln(Domain),
+      %write('inputRestriction:'),writeln(Restriction),
+      member(R, Restriction),member(R,Domain)%,writeln('Yay')
      );
      true.
 
@@ -341,7 +346,13 @@ pipeline_from_predicates_with_domain_constraint(ListOfPredicates,Pipeline):-
 	build_pipeline(Annotators, Pipeline),
 	forall(member(P,Pipeline), can_inputs_be_provided_for_annotator(P)).
 	
-	
+
+pipeline_for_key_value_pair((K,V),P):-
+    retract_query_assertions,
+    assert(requestedValueForKey(K,V)),
+    pipeline_from_predicates_with_domain_constraint([K],P).
+    
+
 % OLD implementation without domain constraings(keeping as a reference for now)
 annotators_for_predicates_no_constraint(Predicates, A):-
 	member(P,Predicates), 
@@ -349,4 +360,27 @@ annotators_for_predicates_no_constraint(Predicates, A):-
 
 build_pipeline_from_predicates_no_constraints(ListOfPredicates,Pipeline):-
 	setof(X,annotators_for_predicates_no_constraint(ListOfPredicates, X), Annotators), % Only build one list of annotators for the given Predicates
-	build_pipeline(Annotators, Pipeline).	
+	build_pipeline(Annotators, Pipeline).
+	
+assert_test_pipeline:-
+    owl_instance_from_class(rs_components:'CollectionReader',_),owl_instance_from_class(rs_components:'ImagePreprocessor',_),
+    owl_instance_from_class(rs_components:'RegionFilter',_),
+    owl_instance_from_class(rs_components:'NormalEstimator',_),
+    owl_instance_from_class(rs_components:'PlaneAnnotator',_),
+    owl_instance_from_class(rs_components:'ImageSegmentationAnnotator',_),
+    owl_instance_from_class(rs_components:'PointCloudClusterExtractor',_),
+    owl_instance_from_class(rs_components:'ClusterMerger',_),
+    owl_instance_from_class(rs_components:'Cluster3DGeometryAnnotator',_),
+    owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',PI),set_annotator_output_type_domain(PI,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),
+    owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',CI),set_annotator_output_type_domain(CI,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor'),
+    owl_instance_from_class(rs_components:'SacModelAnnotator',SI),set_annotator_output_type_domain(SI,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'),
+    assert(requestedValueForKey(shape,rs_components:'Cylinder')).
+
+    
+retract_all_annotators:-
+    forall(owl_subclass_of(S,rs_components:'RoboSherlockComponent'),
+    rdf_retractall(_,rdf:type,S)).   
+    
+retract_query_assertions:-
+    retract(requestedValueForKey(_,_)).
+    
