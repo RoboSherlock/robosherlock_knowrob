@@ -1907,12 +1907,6 @@
         <rdfs:subClassOf>
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
-                <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationSemanticcolor"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
                 <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsPclNormalscloud"/>
             </owl:Restriction>
         </rdfs:subClassOf>
@@ -1920,12 +1914,6 @@
             <owl:Restriction>
                 <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualInputRequired"/>
                 <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsSceneMergedcluster"/>
-            </owl:Restriction>
-        </rdfs:subClassOf>
-        <rdfs:subClassOf>
-            <owl:Restriction>
-                <owl:onProperty rdf:resource="http://knowrob.org/kb/rs_components.owl#perceptualOutput"/>
-                <owl:someValuesFrom rdf:resource="http://knowrob.org/kb/rs_components.owl#RsAnnotationCylindricalshape"/>
             </owl:Restriction>
         </rdfs:subClassOf>
         <rdfs:subClassOf>
