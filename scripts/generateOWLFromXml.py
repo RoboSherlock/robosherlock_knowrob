@@ -169,6 +169,9 @@ class OWLWriteManager:
             "<owl:Class rdf:about=\"http://knowrob.org/kb/" + self.file_name + "#RoboSherlockComponent\">\n"
             "   <rdfs:subClassOf rdf:resource=\"&knowrob;Algorithm\"/>\n"
             "</owl:Class>\n\n"
+            "<owl:Class rdf:about=\"http://knowrob.org/kb/" + self.file_name + "#FeatureDescriptor\">\n"
+            "   <rdfs:subClassOf rdf:resource=\"&knowrob;MathematicalOrComputationalThing\"/>\n"
+            "</owl:Class>\n\n"
             "<!-- http://knowrob.org/kb/" + self.file_name + "#RoboSherlockType-->\n"
             "<owl:Class rdf:about=\"http://knowrob.org/kb/" + self.file_name + "#RoboSherlockType\">\n"
             "   <rdfs:subClassOf rdf:resource=\"&knowrob;ObjectType\"/>\n"
@@ -639,6 +642,8 @@ if __name__ == "__main__":
 
     owl_manager.addOWLClass(OWLClass("Handle", OWLSubClassOf("ObjectPart") ))
 
+    owl_manager.addOWLClass(OWLClass("VFH", OWLSubClassOf("FeatureDescriptor") ))
+    owl_manager.addOWLClass(OWLClass("BVLC_REF", OWLSubClassOf("FeatureDescriptor") ))
     # owl_manager.addOWLClass(OWLClass("KellogsLogo", OWLSubClassOf("Logo") ))
     # owl_manager.addOWLClass(OWLClass("MondaminLogo", OWLSubClassOf("Logo") ))
     # owl_manager.addOWLClass(OWLClass("PfannerLogo", OWLSubClassOf("Logo") ))
