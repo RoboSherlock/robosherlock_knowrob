@@ -370,7 +370,7 @@ assert_test_pipeline:-
     owl_instance_from_class(rs_components:'ImageSegmentationAnnotator',_),
     owl_instance_from_class(rs_components:'PointCloudClusterExtractor',_),
     owl_instance_from_class(rs_components:'ClusterMerger',_),
-    owl_instance_from_class(rs_components:'Cluster3DGeometryAnnotator',_),
+    owl_instance_from_class(rs_components:'Cluster3DGeometryAnnotator',GI),set_annotator_output_type_domain(GI,[rs_components:'Small',rs_components:'Big',rs_components:'Medium'],rs_components:'RsAnnotationGeometry'),
     owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',PI),set_annotator_output_type_domain(PI,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),
     owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',CI),set_annotator_output_type_domain(CI,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor'),
     owl_instance_from_class(rs_components:'SacModelAnnotator',SI),set_annotator_output_type_domain(SI,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'),
