@@ -2,7 +2,7 @@
 %Rules for planing a new pipeline based on keys extracted from a query
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-:- module(rs_query_resoning,
+:- module(rs_query_reasoning,
     [
   compute_annotators/1,
   annotators/1,
@@ -86,6 +86,7 @@ rs_type_for_predicate(class, rs_components:'RsAnnotationClassification').
 rs_type_for_predicate(class, rs_components:'RsAnnotationDetection').
 rs_type_for_predicate(type, rs_components:'RsAnnotationClassification').
 rs_type_for_predicate(type, rs_components:'RsAnnotationDetection').
+rs_type_for_predicate(location, rs_components:'RsAnnotationGeometry').
 
 % END: query predicates available and mapping to RS types
 
@@ -329,9 +330,10 @@ annotator_satisfies_domain_constraints(Key,A):-
         owl_individual_of(I,A),
         compute_annotator_output_type_domain(I,Type,DList),
         requestedValueForKey(Key,Val), % these relations get asserted when RoboSherlock starts; TODO: requested value for type; 
-        member(class(D),DList),
-        rdf_global_id(Val,ValURI),
-        owl_subclass_of(D,ValURI).
+        (Val\='' ->
+	  member(class(D),DList),
+	  rdf_global_id(Val,ValURI),
+	  owl_subclass_of(D,ValURI);true).
   
 
 % Predicates : list of predicates
@@ -374,7 +376,7 @@ assert_test_pipeline:-
     owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',PI),set_annotator_output_type_domain(PI,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),
     owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',CI),set_annotator_output_type_domain(CI,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor'),
     owl_instance_from_class(rs_components:'SacModelAnnotator',SI),set_annotator_output_type_domain(SI,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'),
-    assert(requestedValueForKey(shape,rs_components:'Cylinder')).
+    assert(requestedValueForKey(location,'')).
 
     
 retract_all_annotators:-
