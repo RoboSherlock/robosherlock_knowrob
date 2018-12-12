@@ -70,6 +70,7 @@ rs_query_predicate(size).
 rs_query_predicate(detection).
 rs_query_predicate(class).
 rs_query_predicate(type).
+rs_query_predicate(pose).
 rs_query_predicate(obj-part).
 
 rs_query_predicate(cad-model).
@@ -87,6 +88,7 @@ rs_type_for_predicate(class, rs_components:'RsAnnotationDetection').
 rs_type_for_predicate(type, rs_components:'RsAnnotationClassification').
 rs_type_for_predicate(type, rs_components:'RsAnnotationDetection').
 rs_type_for_predicate(location, rs_components:'RsAnnotationGeometry').
+rs_type_for_predicate(pose, rs_components:'RsAnnotationPose').
 
 % END: query predicates available and mapping to RS types
 
@@ -328,12 +330,11 @@ annotator_satisfies_domain_constraints(Key,A):-
         annotators_for_predicate(Key, A),
         rs_type_for_predicate(Key, Type),
         owl_individual_of(I,A),
-        compute_annotator_output_type_domain(I,Type,DList),
-        requestedValueForKey(Key,Val), % these relations get asserted when RoboSherlock starts; TODO: requested value for type; 
-        (Val\='' ->
+        ((compute_annotator_output_type_domain(I,Type,DList),requestedValueForKey(Key,Val)) -> % these relations get asserted when RoboSherlock starts; TODO: requested value for type; 
+          ( Val\='' ->
 	  member(class(D),DList),
 	  rdf_global_id(Val,ValURI),
-	  owl_subclass_of(D,ValURI);true).
+	  owl_subclass_of(D,ValURI);true);true)	.
   
 
 % Predicates : list of predicates
@@ -376,7 +377,7 @@ assert_test_pipeline:-
     owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',PI),set_annotator_output_type_domain(PI,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),
     owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',CI),set_annotator_output_type_domain(CI,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor'),
     owl_instance_from_class(rs_components:'SacModelAnnotator',SI),set_annotator_output_type_domain(SI,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'),
-    assert(requestedValueForKey(location,'')).
+    assert(requestedValueForKey(pose,'')).
 
     
 retract_all_annotators:-
