@@ -334,7 +334,7 @@ annotator_satisfies_domain_constraints(Key,A):-
           ( Val\='' ->
 	  member(class(D),DList),
 	  rdf_global_id(Val,ValURI),
-	  owl_subclass_of(D,ValURI);true);true)	.
+	  owl_subclass_of(D,ValURI);true);false)	.
   
 
 % Predicates : list of predicates
@@ -377,7 +377,12 @@ assert_test_pipeline:-
     owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',PI),set_annotator_output_type_domain(PI,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),
     owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',CI),set_annotator_output_type_domain(CI,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor'),
     owl_instance_from_class(rs_components:'SacModelAnnotator',SI),set_annotator_output_type_domain(SI,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'),
-    assert(requestedValueForKey(pose,'')).
+    owl_instance_from_class(rs_components:'PclDescriptorExctractor',_),
+    owl_instance_from_class(rs_components:'CaffeAnnotator',_),
+    owl_instance_from_class(rs_components:'KnnAnnotator',KNNI),set_annotator_output_type_domain(KNNI,[kitchen:'WhiteCeramicIkeaBowl'], rs_components:'RsAnnotationClassification'),
+    owl_instance_from_class(rs_components:'HandleAnnotator',HI),set_annotator_output_type_domain(HI,[rs_components:'Handle'], rs_components:'RsAnnotationDetection'),
+    assert(requestedValueForKey(type,'')).
+    
 
     
 retract_all_annotators:-
