@@ -227,6 +227,7 @@ dependency_chain_as_set_for_annotator(Annotator,S) :-
 % of the dependency chain of B
 dependency_chain_ordering(R, AnnotatorA, AnnotatorB) :-
 	annotator_in_dependency_chain_of(AnnotatorA, AnnotatorB) -> R = '<' ; R = '>'.
+
 % Order the output of dependency_chain_as_set_for_annotator in a manner
 % that the evaluation order in L is correct.
 ordered_dependency_chain_for_annotator(Annotator,L) :-
@@ -315,7 +316,9 @@ build_pipeline(ListOfAnnotators,EvaluationList):-
 	    predsort(dependency_chain_ordering, ListOfAnnotators, EvaluationList);
 	    % else: get the missing annotators to complete the list and sort it.
 	    get_missing_annotators(ListOfAnnotators, FullListOfAnnotators),!,
-	    predsort(dependency_chain_ordering, FullListOfAnnotators, EvaluationList)
+	    %for now just call this twice...hacky but seemed to work;
+	    predsort(dependency_chain_ordering, FullListOfAnnotators, EvalList),
+	    predsort(dependency_chain_ordering, EvalList, EvaluationList)
 	  )	
 	; write('** WARNING: One or more inputs of the given List of Annotators can not be computed by an Algorithm in the KnowledgeBase **'),
 	fail.
@@ -377,7 +380,7 @@ assert_test_pipeline:-
     owl_instance_from_class(rs_components:'PrimitiveShapeAnnotator',PI),set_annotator_output_type_domain(PI,[rs_components:'Box',rs_components:'Round'],rs_components:'RsAnnotationShape'),
     owl_instance_from_class(rs_components:'ClusterColorHistogramCalculator',CI),set_annotator_output_type_domain(CI,[rs_components:'Yellow',rs_components:'Blue'],rs_components:'RsAnnotationSemanticcolor'),
     owl_instance_from_class(rs_components:'SacModelAnnotator',SI),set_annotator_output_type_domain(SI,[rs_components:'Cylinder'],rs_components:'RsAnnotationShape'),
-    owl_instance_from_class(rs_components:'PclDescriptorExctractor',_),
+    owl_instance_from_class(rs_components:'PCLDescriptorExtractor',_),	
     owl_instance_from_class(rs_components:'CaffeAnnotator',_),
     owl_instance_from_class(rs_components:'KnnAnnotator',KNNI),set_annotator_output_type_domain(KNNI,[kitchen:'WhiteCeramicIkeaBowl'], rs_components:'RsAnnotationClassification'),
     owl_instance_from_class(rs_components:'HandleAnnotator',HI),set_annotator_output_type_domain(HI,[rs_components:'Handle'], rs_components:'RsAnnotationDetection'),
