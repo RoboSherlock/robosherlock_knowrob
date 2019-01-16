@@ -13,7 +13,6 @@
 :- rdf_db:rdf_register_prefix(rs_components, 'http://knowrob.org/kb/rs_components.owl#', [keep(true)]).
 
 
-% :- use_module(library(rs_plan_pipeline)).
 :- use_module(library(rs_query_interface)). % the actual planning of pipelines
 :- use_module(library(rs_query_reasoning)). % execute ROS interface queries through Prolog
 :- use_module(library(rs_similar_objects)).
