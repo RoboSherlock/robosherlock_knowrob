@@ -36,9 +36,9 @@
   set_annotator_input_type_constraint/3,
   compute_annotator_output_type_domain/3,
   compute_annotator_input_type_restriction/3,
-  rs_query_predicate/1,
-  rs_type_for_predicate/2,
   assert_test_pipeline/0,
+  assert_query_lang/0,
+  retract_query_lang/0,
   retract_all_annotators/0,
   retract_query_assertions/0
 ]).
@@ -54,43 +54,11 @@
    set_annotator_output_type_domain(r,t,r),
    set_annotator_input_type_constraint(r,t,r),
    compute_annotator_output_type_domain(r,r,t),
-   compute_annotator_input_type_restriction(r,r,t),
-   rs_query_predicate(+),
-   rs_type_for_predicate(+,r).
-
+   compute_annotator_input_type_restriction(r,r,t).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Pipeline Planning
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% START: query predicates available and mapping to RS types
-rs_query_predicate(shape).
-rs_query_predicate(color).
-rs_query_predicate(size).
-rs_query_predicate(detection).
-rs_query_predicate(class).
-rs_query_predicate(type).
-rs_query_predicate(pose).
-rs_query_predicate(obj-part).
-
-rs_query_predicate(cad-model).
-rs_query_predicate(volume).
-rs_query_predicate(contains).
-rs_query_predicate(timestamp).
-rs_query_predicate(location).
-
-rs_type_for_predicate(shape, rs_components:'RsAnnotationShape').
-rs_type_for_predicate(color, rs_components:'RsAnnotationSemanticcolor').
-rs_type_for_predicate(size, rs_components:'RsAnnotationGeometry').
-rs_type_for_predicate(detection, rs_components:'RsAnnotationDetection').
-rs_type_for_predicate(class, rs_components:'RsAnnotationClassification').
-rs_type_for_predicate(class, rs_components:'RsAnnotationDetection').
-rs_type_for_predicate(type, rs_components:'RsAnnotationClassification').
-rs_type_for_predicate(type, rs_components:'RsAnnotationDetection').
-rs_type_for_predicate(location, rs_components:'RsAnnotationGeometry').
-rs_type_for_predicate(pose, rs_components:'RsAnnotationPose').
-
-% END: query predicates available and mapping to RS types
 
 compute_annotators(A) :- 
 	owl_subclass_of(A,rs_components:'RoboSherlockComponent'),
@@ -386,8 +354,35 @@ assert_test_pipeline:-
     owl_instance_from_class(rs_components:'HandleAnnotator',HI),set_annotator_output_type_domain(HI,[rs_components:'Handle'], rs_components:'RsAnnotationDetection'),
     assert(requestedValueForKey(type,'')).
     
+assert_query_lang:-
+	assert(rs_query_predicate(shape),
+	assert(rs_query_predicate(color),
+	assert(rs_query_predicate(size),
+	assert(rs_query_predicate(detection),
+	assert(rs_query_predicate(class),
+	assert(rs_query_predicate(type),
+	assert(rs_query_predicate(pose),
+	assert(rs_query_predicate(obj-part),
+	assert(rs_query_predicate(cad-model),
+	assert(rs_query_predicate(volume)),
+	assert(rs_query_predicate(contains)),
+	assert(rs_query_predicate(timestamp)),
+	assert(rs_query_predicate(location)),
+	assert(rs_type_for_predicate(shape, rs_components:'RsAnnotationShape')),
+	assert(rs_type_for_predicate(color, rs_components:'RsAnnotationSemanticcolor')),
+	assert(rs_type_for_predicate(size, rs_components:'RsAnnotationGeometry')),
+	assert(rs_type_for_predicate(detection, rs_components:'RsAnnotationDetection')),
+	assert(rs_type_for_predicate(class, rs_components:'RsAnnotationClassification')),
+	assert(rs_type_for_predicate(class, rs_components:'RsAnnotationDetection')),
+	assert(rs_type_for_predicate(type, rs_components:'RsAnnotationClassification')),
+	assert(rs_type_for_predicate(type, rs_components:'RsAnnotationDetection')),
+	assert(rs_type_for_predicate(location, rs_components:'RsAnnotationGeometry')),
+	assert(rs_type_for_predicate(pose, rs_components:'RsAnnotationPose').
 
-    
+retract_query_lang:-
+	retractall(rs_query_predicate(_)),
+	retractall(rs_type_for_predicate(_,_)).
+   	
 retract_all_annotators:-
     forall(owl_subclass_of(S,rs_components:'RoboSherlockComponent'),
     rdf_retractall(_,rdf:type,S)).   
