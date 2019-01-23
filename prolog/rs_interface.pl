@@ -93,7 +93,7 @@ spatial_relation(in-front-of).
 
 % check if key can exist and add it to designator
 add_kvp(Key,Value,D):-
-    rs_query_predicate(Key),
+    %rs_query_predicate(Key),
     cpp_add_kvp(Key,Value,D).
 
 % handle case when key hints at a nested designator
@@ -156,7 +156,8 @@ detect(List):-
 
 get_keys([],[]).
 get_keys([H|T],L1):-
-        rs_query_predicate(H),L1=[H|T1],get_keys(T,T1);
+        %rs_query_predicate(H),
+        L1=[H|T1],get_keys(T,T1);
         get_keys(T,L1).
 
 
