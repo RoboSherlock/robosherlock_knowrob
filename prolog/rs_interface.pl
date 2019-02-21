@@ -1,40 +1,58 @@
 :- module(rs_query_interface,
   [
-  rs_query_keyword/1,
-  rs_interface/2,
   rs_pause/1,
   rs_stop/0,
-  execute_pipeline/1,
-  detect_json/1,
+  execute_pipeline/1,  
+  execute_annotator/1,
+  run_annotator/1,
+  execute_individual_of_annotator/1,
   detect/1,
   get_list_of_predicates/2, 
-  parse_description/2,
-  detect_new/2
+  parse_description/2
 ]).
 
+:- rdf_meta
+  execute_annotator(t),
+  run_annotator(t).
+
 :- use_foreign_library('librs_prologQueries.so').
+:- use_module(library(rs_query_reasoning)).
 
 %%%%%%%%%%%%%%%% BEGIN: C++ Interface %%%%%%%%%%%%%%%%%%%%
 %%Queries written using this interface need a sanity check
 %%e,g,. spatial relations do not make sense inside a color determiner 
-rs_interface :-
-   rs_interface(_).
 
-:- assert(rs_interf(fail)).
+%% OLD QUERIES starting RS process from within Prolog
+%rs_interface :-
+   %rs_interface(_).
 
-rs_interface(Client,Ae) :-
-   rs_interf(fail),
-   cpp_init_ae(Client,Ae),
-   retract(rs_interf(fail)),
-   assert(rs_interf(Client)),!.
+%:- assert(rs_interf(fail)).
+
+%rs_interface(Client,Ae) :-
+   %rs_interf(fail),
+   %cpp_init_ae(Client,Ae),
+   %retract(rs_interf(fail)),
+   %assert(rs_interf(Client)),!.
     
-rs_interface(Cl):-
-   rs_interf(Cl).
-
-
-execute_pipeline(_):-
-   rs_interface(Cl),
-   cpp_process_once(Cl).
+%rs_interface(Cl):-
+   %rs_interf(Cl).
+   
+execute_pipeline(A):-
+  cpp_execute_pipeline(A).
+  
+run_annotator(A):-
+  execute_annotator(A);
+  execute_individual_of_annotator(A).
+  
+execute_annotator(A):-
+  \+owl_individual_of(A,rs_components:'RoboSherlockComponent'),
+  build_pipeline([A],P),
+  execute_pipeline(P).
+  
+execute_individual_of_annotator(A):-
+  owl_individual_of(A,C),compute_annotators(C),
+  build_pipeline([C],P),
+  execute_pipeline(P).
 
 rs_pause(A):-
    cpp_rs_pause(A).
@@ -49,6 +67,8 @@ rs_clear_ae:-
    cpp_remove_ae(Ae),
    assert(rs_interf(fail)).
 
+   
+%%START PARSING the Query   
 %defs for syntax checks
 designator_type([an,object],'object').
 designator_type([an,obj],'object').
@@ -59,22 +79,7 @@ designator_type([a,location],'location').
 designator(location).
 designator(object).
 
-%keywords available
-rs_query_keyword(shape).
-rs_query_keyword(detection).
-rs_query_keyword(obj-part).
-rs_query_keyword(class).
-rs_query_keyword(size).
-rs_query_keyword(type).
-rs_query_keyword(color).
-rs_query_keyword(cad-model).
-rs_query_keyword(volume).
-rs_query_keyword(contains).
-rs_query_keyword(timestamp).
-rs_query_keyword(handle).
-rs_query_keyword(location).
 % for simplifying query writing spatial relation can also be keyword
-
 spatial_relation(on).
 spatial_relation(in).
 spatial_relation(next-to).
@@ -88,7 +93,7 @@ spatial_relation(in-front-of).
 
 % check if key can exist and add it to designator
 add_kvp(Key,Value,D):-
-    rs_query_keyword(Key),
+    %rs_query_predicate(Key),
     cpp_add_kvp(Key,Value,D).
 
 % handle case when key hints at a nested designator
@@ -139,7 +144,7 @@ parse_description([ A,B | Tail],D):-
 designator_type([ A,B | _ ] ):-
     designator_type([A,B],_).
 
-
+    
 detect(List):-
     %rs_interface(A),
     parse_description(List,D),
@@ -147,26 +152,18 @@ detect(List):-
     cpp_query_rs(D)),_,[]).
      %thread_join(Th,Status).
 
-detect_json(Json):-
-    rs_interface,
-    cpp_make_designator(Json,Desig),
-    cpp_process_once(Desig).
-
 %%%%%%%%%%%%%%%%%%%%% NEW %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 get_keys([],[]).
 get_keys([H|T],L1):-
-        rs_query_keyword(H),L1=[H|T1],get_keys(T,T1);
+        %rs_query_predicate(H),
+        L1=[H|T1],get_keys(T,T1);
         get_keys(T,L1).
 
 
 rs_pipeline_from_query(Q,P):-
     get_keys(Q,Keys),
-    build_single_pipeline_from_predicates(Keys,P),!.
-
-detect_new(List,Pipeline):-
-    flatten(List,Lf),
-    rs_pipeline_from_query(Lf,Pipeline).
+    build_pipeline_from_predicates(Keys,P).
 
 %%%%%%%%%%%%%%%%%%%%% %%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -177,9 +174,4 @@ get_list_of_predicates([Pred|T],[Pred|Result]):-
 	is_predicate(Pred),
 	get_list_of_predicates(T,Result).
 get_list_of_predicates([_|Tail],Result):-
-get_list_of_predicates(Tail,Result).
-
-
-
-    
-%%%%%%%%%%%%%%%% END: Java Result Queries%%%%%%%%%%%%%%%%%%%%    
+get_list_of_predicates(Tail,Result).  

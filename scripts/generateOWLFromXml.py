@@ -14,6 +14,8 @@ from os import listdir
 from os.path import isfile, join
 from lxml import etree
 
+import yaml
+
 
 NS = "{http://uima.apache.org/resourceSpecifier}"
 INDIVIDUAL_PREFIX = "Instance"
@@ -80,7 +82,7 @@ class OWLNamedIndividual(OWLIndividual):
         super(OWLNamedIndividual, self).__init__(name,resource,relations)
 
 class OWLProperty(object):
-    def __init__(self,name,domain="",property_range="",subproperty_of=""):
+    def __init__(self,name,domain="",property_range=[],subproperty_of=""):
         self.name = name
         self.domain = domain
         self.property_range = property_range
@@ -166,6 +168,9 @@ class OWLWriteManager:
             "<!-- http://knowrob.org/kb/" + self.file_name + "#RoboSherlockComponent-->\n"
             "<owl:Class rdf:about=\"http://knowrob.org/kb/" + self.file_name + "#RoboSherlockComponent\">\n"
             "   <rdfs:subClassOf rdf:resource=\"&knowrob;Algorithm\"/>\n"
+            "</owl:Class>\n\n"
+            "<owl:Class rdf:about=\"http://knowrob.org/kb/" + self.file_name + "#FeatureDescriptor\">\n"
+            "   <rdfs:subClassOf rdf:resource=\"&knowrob;MathematicalOrComputationalThing\"/>\n"
             "</owl:Class>\n\n"
             "<!-- http://knowrob.org/kb/" + self.file_name + "#RoboSherlockType-->\n"
             "<owl:Class rdf:about=\"http://knowrob.org/kb/" + self.file_name + "#RoboSherlockType\">\n"
@@ -259,7 +264,9 @@ class OWLWriteManager:
         for p in self.owl_properties:
             full_prop_name = self.namespace_prefix + "#" + p.name
             full_domain_name = self.namespace_prefix + "#" + p.domain
-            full_range_name = self.namespace_prefix + "#" + p.property_range
+            full_range_name = []
+            for pr in p.property_range:
+                full_range_name.append(self.namespace_prefix + "#" + pr)
             string += ("<owl:ObjectProperty rdf:about=\""+full_prop_name+"\">\n")
             if p.subproperty_of:
                 string += "    <rdfs:subPropertyOf rdf:resource=\"" + p.subproperty_of + "\"/>\n"
@@ -271,11 +278,27 @@ class OWLWriteManager:
                    "            <owl:onProperty rdf:resource=\""+full_prop_name+"\"/>\n"
                    "            <owl:someValuesFrom rdf:resource=\""+full_domain_name+"\"/>\n"
                    "        </owl:Restriction>\n"
-                   "   </rdfs:domain>\n"
-                   "   <rdfs:range>\n"
+                   "    </rdfs:domain>\n")
+                if len(full_range_name) == 1:
+                   string+= ("    <rdfs:range>\n"
                    "        <owl:Restriction>\n"
                    "            <owl:onProperty rdf:resource=\""+full_prop_name+"\"/>\n"
-                   "            <owl:someValuesFrom rdf:resource=\""+full_range_name+"\"/>\n"
+                   "            <owl:someValuesFrom rdf:resource=\""+full_range_name[0]+"\"/>\n"
+                   "        </owl:Restriction>\n"
+                   "   </rdfs:range>\n"
+                   "</owl:ObjectProperty>\n\n")
+                else:
+                   string += ("   <rdfs:range>\n"
+                   "        <owl:Restriction>\n"
+                   "            <owl:onProperty rdf:resource=\"" + full_prop_name + "\"/>\n"
+                   "                <owl:someValuesFrom>\n"
+                   "                    <owl:Class>\n"
+                   "                        <owl:unionOf rdf:parseType=\"Collection\">\n")
+                   for frn in full_range_name:
+                       string +=("                              <rdf:Description rdf:about=\""+frn+"\"/>\n")
+                   string += ("                     </owl:unionOf>\n"
+                   "             </owl:Class>\n"
+                   "            </owl:someValuesFrom>\n"
                    "        </owl:Restriction>\n"
                    "   </rdfs:range>\n"
                    "</owl:ObjectProperty>\n\n")
@@ -383,7 +406,6 @@ def getTSPaths():
 
 
 def getpackagepaths():
-
     rospack = rospkg.RosPack()
     paths = []
     paths.append(rospack.get_path('robosherlock'))
@@ -402,42 +424,35 @@ def getAnnotatorIOs(filepath):
     Returns: A tuple of that form: (list-of-inputs, list-of-outputs)"""
     outputs = []
     inputs = []
-    tree = etree.parse(filepath)
-    root = tree.getroot()
-    for element in root.iter("*"):
-        if element.tag == NS+'sofaName':
-            # print "sofaName: "+ element.text
-            inputs.append(element.text)
-        if element.tag == NS+'capability':
-            t = {}
-            for e in element:
-                if e.tag == NS + 'outputs':
-                    for types in e.findall(NS+'type'):
-                        # print "Output Type: " + types.text
-                        outputs.append(types.text)
+    print filepath
+    stream = open(filepath, "r")
+    docs = yaml.load(stream)
+
+    if not docs.has_key('capabilities'):
+        print 'there are no capabilities defined for this annotator'
+        return (inputs, outputs)
+    if not isinstance(docs['capabilities'],dict):
+        print 'Capabilities is not a dict. Exiting'
+        return (inputs,outputs)
+    if docs['capabilities'].has_key('inputs'):
+        inputlist = docs['capabilities']['inputs']
+        for i in inputlist:
+            if isinstance(i, dict):
+                for key in i:
+                    inputs.append(key)
+            else:
+                inputs.append(i)
+
+    if docs['capabilities'].has_key('outputs'):
+        outputlist = docs['capabilities']['outputs']
+        for o in outputlist:
+            if isinstance(o, dict):
+                for key in o:
+                    outputs.append(key)
+            else:
+                outputs.append(o)
     return (inputs,outputs)
 
-def getAnnotatorRequirements(filepath):
-    """Fetch the requirements of a Annotator from the annotator definition. Input: full filepath for a annotator
-    description XML. It looks for "Requires CAPABILITYNAME" or "RequiresCAPABILITYNAME' in the 'description'
-    field of the annotator XML. The usable Capabilitynames are defined at the heading of this file
-    and should comply with the Capability Names in the rs_components.owl (robosherlock_knowrob package)
-    below the PerceptionCapability class.
-    Returns: A list of required Capabilities"""
-    outputs = []
-    inputs = []
-    tree = etree.parse(filepath)
-    root = tree.getroot()
-    required_capabilities = []
-
-    for element in root.iter("*"):
-        if element.tag == NS+'description' and element.text:
-            # print "description: "+ element.text
-            for cap in ACCEPTABLE_PERCEPTION_CAPABILITY_NAMES:
-                if "Requires"+cap in element.text or "Requires "+cap in element.text:
-                    required_capabilities.append(cap)
-
-    return required_capabilities
 
 def getAnnotatorNames():
 
@@ -457,27 +472,25 @@ def getAnnotatorNames():
             for filename in os.listdir(subdirpath):
                  filepath = os.path.join(subdirpath, filename)
                  (name,ext) = os.path.splitext(filename)
-                 if not os.path.isfile(filepath) or ext != ".xml":
+                 if not os.path.isfile(filepath) or ext != ".yaml":
                      continue;
 
                  annotators.append(Annotator(name, subdir))
                  # annotators.append((subdir,name))
                  # print "Annotator:" + filepath
                  (inputs,outputs) = getAnnotatorIOs(filepath)
-                 annotators[-1].required_capabilities = getAnnotatorRequirements(filepath)
                  annotators[-1].inputs = inputs
                  annotators[-1].outputs = outputs
         for filename in os.listdir(p):
             filepath = os.path.join(p, filename)
             (name,ext) = os.path.splitext(filename)
-            if not os.path.isfile(filepath) or ext != ".xml":
+            if not os.path.isfile(filepath) or ext != ".yaml":
                 continue;
             # annotators.append(('RoboSherlock',name))
             annotators.append(Annotator(name, 'RoboSherlock'))
             # print "Annotator:" + filepath
             # getAnnotatorIOs(filepath)
             (inputs,outputs) = getAnnotatorIOs(filepath)
-            annotators[-1].required_capabilities = getAnnotatorRequirements(filepath)
             annotators[-1].inputs = inputs
             annotators[-1].outputs = outputs
     return (atypes,annotators)
@@ -515,12 +528,12 @@ if __name__ == "__main__":
     owl_manager = OWLWriteManager("http://knowrob.org/kb/rs_components.owl","rs_components.owl")
 
     # DEPRECATED: Define the rsInput and rsOutput relation. A RoboSherlockComponent can require a RoboSherlockType or yield one as a result.
-    owl_manager.addOWLProperty( OWLObjectProperty(  INPUT_PROPERTY_NAME,"RoboSherlockComponent","RoboSherlockType") )
-    owl_manager.addOWLProperty( OWLObjectProperty( OUTPUT_PROPERTY_NAME,"RoboSherlockComponent","RoboSherlockType") )
+    owl_manager.addOWLProperty( OWLObjectProperty(  INPUT_PROPERTY_NAME,"RoboSherlockComponent",["RoboSherlockType"]) )
+    owl_manager.addOWLProperty( OWLObjectProperty( OUTPUT_PROPERTY_NAME,"RoboSherlockComponent",["RoboSherlockType"]) )
 
     # Define input/output property in KnowRob Ontology
-    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_INPUT_PROPERTY_NAME, "RoboSherlockComponent","RoboSherlockType", "&knowrob;preActors") )
-    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_OUTPUT_PROPERTY_NAME,"RoboSherlockComponent","RoboSherlockType", "&knowrob;outputs") )
+    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_INPUT_PROPERTY_NAME, "RoboSherlockComponent",["RoboSherlockType"], "&knowrob;preActors") )
+    owl_manager.addOWLProperty( OWLObjectProperty( ACTOR_OUTPUT_PROPERTY_NAME,"RoboSherlockComponent",["RoboSherlockType"], "&knowrob;outputs") )
 
     # Add all the RoboSherlock Types to the ontology
     list_of_types = getRoboSherlockTypes()
@@ -608,6 +621,10 @@ if __name__ == "__main__":
     # to provide background knowledge about perceptual things
     owl_manager.addOWLProperty( OWLObjectProperty( "hasDetectionClue") )
 
+    # add property restricion on Union of classes
+    owl_manager.addOWLProperty( OWLObjectProperty( "outputDomain", "RoboSherlockComponent",["SpatialThing-Localized", "VisualAppearance"]) )
+
+
     # Create the visual appearances
     owl_manager.addOWLClass(OWLClass("VisualAppearance", OWLSubClassOf("") ))
     # The meta types of visual appearances:
@@ -615,12 +632,18 @@ if __name__ == "__main__":
     owl_manager.addOWLClass(OWLClass("Logo", OWLSubClassOf("VisualAppearance") ))
     owl_manager.addOWLClass(OWLClass("TextOnObject", OWLSubClassOf("VisualAppearance") ))
     owl_manager.addOWLClass(OWLClass("Shape", OWLSubClassOf("VisualAppearance") ))
-    owl_manager.addOWLClass(OWLClass("HandlingPoints", OWLSubClassOf("VisualAppearance") ))
+    owl_manager.addOWLClass(OWLClass("Color", OWLSubClassOf("VisualAppearance") ))
+    owl_manager.addOWLClass(OWLClass("ObjectPart", OWLSubClassOf("VisualAppearance") ))
 
-    owl_manager.addOWLClass(OWLClass("SmallSize", OWLSubClassOf("Size") ))
-    owl_manager.addOWLClass(OWLClass("MediumSize", OWLSubClassOf("Size") ))
-    owl_manager.addOWLClass(OWLClass("BigSize", OWLSubClassOf("Size") ))
+    owl_manager.addOWLClass(OWLClass("Small", OWLSubClassOf("Size") ))
+    owl_manager.addOWLClass(OWLClass("Medium", OWLSubClassOf("Size") ))
+    owl_manager.addOWLClass(OWLClass("Big", OWLSubClassOf("Size") ))
 
+
+    owl_manager.addOWLClass(OWLClass("Handle", OWLSubClassOf("ObjectPart") ))
+
+    owl_manager.addOWLClass(OWLClass("VFH", OWLSubClassOf("FeatureDescriptor") ))
+    owl_manager.addOWLClass(OWLClass("BVLC_REF", OWLSubClassOf("FeatureDescriptor") ))
     # owl_manager.addOWLClass(OWLClass("KellogsLogo", OWLSubClassOf("Logo") ))
     # owl_manager.addOWLClass(OWLClass("MondaminLogo", OWLSubClassOf("Logo") ))
     # owl_manager.addOWLClass(OWLClass("PfannerLogo", OWLSubClassOf("Logo") ))
@@ -631,18 +654,22 @@ if __name__ == "__main__":
     # owl_manager.addOWLClass(OWLClass("TextPfannkuchenmix", OWLSubClassOf("TextOnObject") ))
     # owl_manager.addOWLClass(OWLClass("TextTee", OWLSubClassOf("TextOnObject") ))
 
-    owl_manager.addOWLClass(OWLClass("BoxShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("CylinderShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("CylindricalShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("SphereShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("ConeShape", OWLSubClassOf("Shape") ))
-    owl_manager.addOWLClass(OWLClass("RoundShape", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Box", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Flat", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Cylinder", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Sphere", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Cone", OWLSubClassOf("Shape") ))
+    owl_manager.addOWLClass(OWLClass("Round", OWLSubClassOf("Shape") ))
 
-    owl_manager.addOWLClass(OWLClass("GraspPoints", OWLSubClassOf("HandlingPoints") ))
-    owl_manager.addOWLClass(OWLClass("OpeningPoints", OWLSubClassOf("HandlingPoints") ))
-    owl_manager.addOWLClass(OWLClass("Knob", OWLSubClassOf("GraspPoints") ))
-    owl_manager.addOWLClass(OWLClass("OneHandGraspable", OWLSubClassOf("GraspPoints") ))
-    owl_manager.addOWLClass(OWLClass("TwoHandGraspable", OWLSubClassOf("GraspPoints") ))
+    owl_manager.addOWLClass(OWLClass("Yellow", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Blue", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Green", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Red", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Black", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("White", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Cyan", OWLSubClassOf("Color") ))
+    owl_manager.addOWLClass(OWLClass("Magenta", OWLSubClassOf("Color") ))
+  
 
     # The second type of detection predicates: DetectionClues.
     # This can be things that are background knowledge about an object, for example
